@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2022-03-08 20:24:48                          */
+/* Created on:     2022-03-13 15:37:11                          */
 /*==============================================================*/
 
 
@@ -319,7 +319,7 @@ create table t_login_log
    id                   BIGINT unsigned not null auto_increment comment 'ID',
    user_id              BIGINT unsigned not null comment '用户ID',
    user_auth_id         BIGINT unsigned not null comment '用户授权ID',
-   platform             TINYINT unsigned comment '平台（0: "Andorid", 1: "IOS"）',
+   platform             CHAR(7) comment 'andorid","ios',
    model                VARCHAR(50) comment '型号',
    brand                VARCHAR(50) comment '品牌',
    skd_version          CHAR(10) comment 'SDK版本',
