@@ -18,7 +18,8 @@ import lombok.ToString;
 public enum ResultCodeEnum {
 
     // 共通
-    SUCCESS(10000, "成功"),
+    SUCCESS(10000, "成功"), 
+    UNKNOWN_ERROR(10001,"未知错误"),
 
     
     
