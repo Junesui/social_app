@@ -49,7 +49,6 @@
     <true/>
     <key>NSCameraUsageDescription</key>
     <string>需要使用相机权限</string>
-
     <key>NSAppTransportSecurity</key>
     <dict>
     	<key>NSAllowsArbitraryLoads</key>
@@ -57,6 +56,7 @@
     </dict>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>需要使用相册权限</string>
-
+    <key>NSMicrophoneUsageDescription</key>
+    <string>需要使用麦克风权限</string>
 </dict>
 </plist>

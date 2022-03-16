@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:imitate_yay/router/router_name.dart';
-import 'package:imitate_yay/util/screen_util.dart';
-import 'package:imitate_yay/widget/my_cache_net_img.dart';
+import 'package:socialapp/router/router_name.dart';
+import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/widget/my_cache_net_img.dart';
 
 /// 九宫格图片展示组件
 class MyImgCell extends StatelessWidget {

@@ -1,6 +1,6 @@
 # socialapp
 
-A social app project.
+A Social APP project.
 
 ## Getting Started
 
