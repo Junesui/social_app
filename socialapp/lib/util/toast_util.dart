@@ -13,6 +13,7 @@ class ToastUtil {
     ToastGravity position = ToastGravity.CENTER,
     Toast toastLength = Toast.LENGTH_SHORT,
   }) {
+    Fluttertoast.cancel();
     return Fluttertoast.showToast(
       msg: msg,
       backgroundColor: bColor,

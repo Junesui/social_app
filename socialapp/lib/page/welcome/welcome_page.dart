@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
 /// 欢迎页
@@ -12,6 +14,9 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  // 是否同意协议
+  bool _isAgree = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,12 +32,12 @@ class _WelcomePageState extends State<WelcomePage> {
                 fit: BoxFit.cover,
               ),
             ),
-            // 底部登录框
+            // 登录/注册，同意协议区域
             Positioned(
               bottom: 0,
               child: Container(
                 width: SU.getScreenWidth(),
-                height: SU.getScreenHeight() * 0.28,
+                height: SU.getScreenHeight() * 0.23,
                 decoration: const BoxDecoration(
                   color: Color(0xcc788c82),
                   border: Border(
@@ -44,8 +49,10 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
                 child: Stack(
                   children: [
-                    _buildRegisterBtn(),
-                    _buildLoginHint(),
+                    // 登录/注册按钮
+                    _buildLoginRegisterBtn(),
+                    // 同意协议
+                    _buildAgreement(),
                   ],
                 ),
               ),
@@ -56,54 +63,100 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  // 注册按钮
-  _buildRegisterBtn() {
+  // 登录/注册按钮
+  _buildLoginRegisterBtn() {
     return Center(
-      child: SizedBox(
-        width: SU.setWidth(450),
-        height: SU.setHeight(108),
-        child: ElevatedButton(
-          onPressed: () {
-            print("click register button");
-          },
-          style: ElevatedButton.styleFrom(
-              onPrimary: Colors.teal,
-              elevation: 0,
-              primary: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(SU.setHeight(50)),
-              )),
-          child: const MyText(
-            text: "注 册",
-            color: Colors.black,
-            fontSize: 48,
-            fontWeight: FontWeight.w500,
-          ),
+      child: ElevatedButton(
+        onPressed: () {
+          if (_isAgree) {
+            Navigator.of(context).pushNamed(RouterName.login);
+          } else {
+            ToastUtil.show(msg: "请先勾选同意按钮");
+          }
+        },
+        style: ElevatedButton.styleFrom(
+            onPrimary: CommonConstant.primaryColor,
+            elevation: 10,
+            primary: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: SU.setWidth(120)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(SU.setHeight(50)),
+            )),
+        child: const MyText(
+          text: "登录/注册",
+          color: Colors.black,
+          fontSize: 36,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
-  // 已有账号，登录提示
-  _buildLoginHint() {
+  // 同意协议
+  _buildAgreement() {
     return Align(
-      alignment: const Alignment(0, 0.45),
+      alignment: const Alignment(0, 0.7),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const MyText(
-            text: "已经有账号了？",
-            fontSize: 36,
-          ),
-          InkWell(
-            onTap: () {
-              print("click login font");
-            },
-            child: const MyText(
-              text: "登录",
-              fontSize: 36,
-              decoration: TextDecoration.underline,
+          // CheckBox 图标
+          Theme(
+            data: ThemeData(unselectedWidgetColor: Colors.white),
+            child: Transform.scale(
+              scale: 0.7,
+              child: SizedBox(
+                width: SU.setWidth(60),
+                child: Checkbox(
+                  value: _isAgree,
+                  onChanged: (isAgree) {
+                    setState(() {
+                      _isAgree = isAgree ?? false;
+                    });
+                  },
+                  activeColor: Colors.white,
+                  checkColor: Colors.black45,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: const CircleBorder(side: BorderSide(color: Colors.white)),
+                ),
+              ),
             ),
+          ),
+          // 文字
+          Row(
+            children: [
+              const MyText(
+                text: "我已阅读并同意",
+                color: Colors.white,
+                fontSize: 36,
+              ),
+              GestureDetector(
+                onTap: () {
+                  ToastUtil.show(msg: "跳转隐私政策页面");
+                },
+                child: const MyText(
+                  text: "隐私政策",
+                  decoration: TextDecoration.underline,
+                  color: Colors.white,
+                  fontSize: 36,
+                ),
+              ),
+              const MyText(
+                text: "和",
+                color: Colors.white,
+                fontSize: 36,
+              ),
+              GestureDetector(
+                onTap: () {
+                  ToastUtil.show(msg: "跳转用户协议页面");
+                },
+                child: const MyText(
+                  text: "用户协议",
+                  decoration: TextDecoration.underline,
+                  color: Colors.white,
+                  fontSize: 36,
+                ),
+              ),
+            ],
           ),
         ],
       ),

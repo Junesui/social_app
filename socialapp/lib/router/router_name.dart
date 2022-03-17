@@ -5,6 +5,8 @@ class RouterName {
 
   // 欢迎页
   static const welcome = "/welcome";
+  // 登录页
+  static const login = "/login";
   // 根路径
   static const root = "/";
   // 搜索页
