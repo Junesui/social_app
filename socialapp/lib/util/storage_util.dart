@@ -11,9 +11,21 @@ class StorageUtil {
   }
 
   // 获取字符串
-  static Future<String> getString(String k) async {
+  static Future<String?> getString(String k) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(k) ?? "";
+    return prefs.getString(k);
+  }
+
+  // 保存Bool
+  static Future<bool> setBool(String k, bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(k, v);
+  }
+
+  // 获取Bool
+  static Future<bool?> getBool(String k) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(k);
   }
 
   // 移除

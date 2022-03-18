@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 /// 从图库选择资源
@@ -10,7 +10,7 @@ class PickUtil {
       {int maxAssets = 9}) async {
     List<AssetEntity>? imgs = await AssetPicker.pickAssets(
       context,
-      themeColor: CommonConstant.primaryColor,
+      themeColor: StyleConstant.primaryColor,
       selectedAssets: selectedAssets,
       sortPathDelegate: const CustomSortPathDelegate(),
       maxAssets: maxAssets,

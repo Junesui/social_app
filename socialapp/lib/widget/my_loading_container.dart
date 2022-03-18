@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/constant/common/asset_constant.dart';
 import 'package:socialapp/util/screen_util.dart';
 
 /// 内容加载出来之前的加载框
@@ -18,7 +18,7 @@ class MyLoadingContainer extends StatelessWidget {
     return Center(
       child: SizedBox(
         width: SU.getScreenWidth() / 3,
-        child: Lottie.asset(CommonConstant.loadingAnimation),
+        child: Lottie.asset(AssetConstant.loadingAnimation),
       ),
     );
   }

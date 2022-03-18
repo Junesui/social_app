@@ -7,9 +7,9 @@ class MyText extends StatelessWidget {
   final double fontSize;
   final FontWeight? fontWeight;
   final Color? color;
-  final TextOverflow overflow;
+  final TextOverflow? overflow;
   final int? maxLines;
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
   final TextDecoration? decoration;
 
   const MyText({

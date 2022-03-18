@@ -1,6 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/util/screen_util.dart';
 
 /// 弹出框
@@ -19,7 +19,7 @@ class DialogUtil {
       btnCancelText: "取消",
       btnOkOnPress: btnOkOnPress,
       btnCancelOnPress: () {},
-      btnOkColor: CommonConstant.primaryColor,
+      btnOkColor: StyleConstant.primaryColor,
       btnCancelColor: Colors.brown,
       dialogType: DialogType.NO_HEADER,
       animType: AnimType.BOTTOMSLIDE,

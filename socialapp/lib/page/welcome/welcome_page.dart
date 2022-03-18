@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/constant/common/asset_constant.dart';
+import 'package:socialapp/constant/common/sk_constant.dart';
+import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/util/storage_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
@@ -28,7 +31,7 @@ class _WelcomePageState extends State<WelcomePage> {
             // 背景图片
             Positioned.fill(
               child: Image.asset(
-                CommonConstant.welcomeBg,
+                AssetConstant.welcomeBg,
                 fit: BoxFit.cover,
               ),
             ),
@@ -69,13 +72,16 @@ class _WelcomePageState extends State<WelcomePage> {
       child: ElevatedButton(
         onPressed: () {
           if (_isAgree) {
+            // 报错同意协议状态
+            StorageUtil.setBool(SKConstant.welcomeIsAgree, true);
+            // 跳转到登录页
             Navigator.of(context).pushNamed(RouterName.login);
           } else {
             ToastUtil.show(msg: "请先勾选同意按钮");
           }
         },
         style: ElevatedButton.styleFrom(
-            onPrimary: CommonConstant.primaryColor,
+            onPrimary: StyleConstant.primaryColor,
             elevation: 10,
             primary: Colors.white,
             padding: EdgeInsets.symmetric(horizontal: SU.setWidth(120)),
@@ -125,13 +131,13 @@ class _WelcomePageState extends State<WelcomePage> {
           Row(
             children: [
               const MyText(
-                text: "我已阅读并同意",
+                text: "已阅读并同意",
                 color: Colors.white,
                 fontSize: 36,
               ),
               GestureDetector(
                 onTap: () {
-                  ToastUtil.show(msg: "跳转隐私政策页面");
+                  ToastUtil.show(msg: "TODO 跳转隐私政策页面");
                 },
                 child: const MyText(
                   text: "隐私政策",
@@ -147,7 +153,7 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
               GestureDetector(
                 onTap: () {
-                  ToastUtil.show(msg: "跳转用户协议页面");
+                  ToastUtil.show(msg: "TODO 跳转用户协议页面");
                 },
                 child: const MyText(
                   text: "用户协议",

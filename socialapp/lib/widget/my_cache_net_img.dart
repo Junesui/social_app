@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:socialapp/constant/common_constant.dart';
+import 'package:socialapp/constant/common/asset_constant.dart';
 
 /// 缓存网络图片
 class MyCacheNetImg extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyCacheNetImg extends StatelessWidget {
   SizedBox _buildPlaceholder() {
     return SizedBox(
       child: Image.asset(
-        CommonConstant.avatarPlaceholder,
+        AssetConstant.avatarPlaceholder,
         fit: BoxFit.cover,
       ),
     );
@@ -36,7 +36,7 @@ class MyCacheNetImg extends StatelessWidget {
     if (imgUrl.isNotEmpty) {
       return CachedNetworkImageProvider(imgUrl);
     } else {
-      return const AssetImage(CommonConstant.avatarPlaceholder);
+      return const AssetImage(AssetConstant.avatarPlaceholder);
     }
   }
 }

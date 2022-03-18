@@ -15,11 +15,11 @@ void main() {
 
   runApp(const MyApp());
 
-  // // 设置状态栏背景为透明
+  // 设置状态栏背景为透明
   // SystemChrome.setSystemUIOverlayStyle(
   //     const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  // // 设置状态栏文字为白色
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  // 设置状态栏文字为黑色
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 }
 
 class MyApp extends StatefulWidget {
@@ -43,10 +43,11 @@ class _MyAppState extends State<MyApp> {
 
           // 主题
           theme: ThemeData(
-              // 取消一些组件的默认点击效果
-              // highlightColor: Colors.transparent,
-              // splashColor: Colors.transparent,
-              ),
+            brightness: Brightness.light,
+            // 取消一些组件的默认点击效果
+            // highlightColor: Colors.transparent,
+            // splashColor: Colors.transparent,
+          ),
         ),
       ),
     );
