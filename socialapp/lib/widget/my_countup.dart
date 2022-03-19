@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:socialapp/widget/my_text.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-/// 计时器
-class MyUpcount extends StatefulWidget {
+/// 正计时器
+class MyCountup extends StatefulWidget {
   final double fontSize;
 
-  const MyUpcount({Key? key, this.fontSize = 45}) : super(key: key);
+  const MyCountup({Key? key, this.fontSize = 45}) : super(key: key);
 
   @override
-  _MyUpcountState createState() => _MyUpcountState();
+  _MyCountupState createState() => _MyCountupState();
 }
 
-class _MyUpcountState extends State<MyUpcount> {
+class _MyCountupState extends State<MyCountup> {
   static final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   // 初始化方法

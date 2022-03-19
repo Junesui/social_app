@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
+import 'package:socialapp/util/format_valid_util.dart';
 import 'package:socialapp/util/screen_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_btn.dart';
+import 'package:socialapp/widget/my_countdown.dart';
+import 'package:socialapp/widget/my_divider.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
+import 'package:socialapp/widget/my_input.dart';
 import 'package:socialapp/widget/my_mask_layer.dart';
 import 'package:socialapp/widget/my_text.dart';
 
@@ -17,32 +21,55 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // 用户名输入框控制器
-  final TextEditingController _usernameController = TextEditingController();
-  // 密码输入框控制器
-  final TextEditingController _passwordController = TextEditingController();
   // 手机号输入框控制器
   final TextEditingController _phoneController = TextEditingController();
   // 验证码输入框控制器
   final TextEditingController _codeController = TextEditingController();
-  // 是否展示遮罩层
+  // 用户名输入框控制器
+  final TextEditingController _usernameController = TextEditingController();
+  // 密码输入框控制器
+  final TextEditingController _passwordController = TextEditingController();
+  // 是否显示遮罩层
   bool _isShowMask = false;
-  // 是否使用账号密码登录
-  bool _isAccountLogin = false;
-  // 是否已获取手机验证码
-  bool _isGetCode = false;
+  // 是否使用手机验证码登录
+  bool _isCodeLogin = true;
+  // 是否显示手机验证码输入框
+  bool _isShowCodeInput = false;
+  // 是否已发送验证码
+  bool _isSendCode = false;
 
   // 销毁方法
   @override
   void dispose() {
+    _phoneController.dispose();
+    _codeController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  // 发送手机验证码
+  _sendCode(String phoneNum) {
+    if (phoneNum.isEmpty) {
+      return;
+    }
+    // 校验手机号格式
+    bool _success = FormatValidUtil.isChinaPhone(phoneNum);
+    if (!_success) {
+      ToastUtil.show(msg: "手机号码格式不正确");
+      return;
+    }
+    setState(() {
+      _isShowCodeInput = true;
+      _isSendCode = true;
+      // TODO 发送手机验证码
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 解决键盘弹起撑起内容导致布局溢出问题
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: MyMaskLayer(
@@ -65,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 关闭按钮和登录区域
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -74,14 +102,14 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context).pop();
                 },
                 icon: Icons.close,
-                color: Colors.black54,
                 size: 90,
               ),
               // 登录区域
-              _isAccountLogin ? _buildAccountLogin() : _buildCodeLogin(),
+              _isCodeLogin ? _buildCodeLogin() : _buildAccountLogin(),
             ],
           ),
-          // 第三方登录
+
+          // 第三方登录区域
           _buildThirdLogin(),
         ],
       ),
@@ -106,11 +134,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: SU.setHeight(80)),
           // 用户名
-          _buildInput("手机号", false, _usernameController),
-          _buildDivider(),
+          MyInput(hintText: "手机号", fontSize: 46, controller: _usernameController),
           // 密码
-          _buildInput("密码", true, _passwordController),
-          _buildDivider(),
+          MyInput(hintText: "密码", fontSize: 46, controller: _passwordController, isObscure: true),
           SizedBox(height: SU.setHeight(80)),
           // 登录按钮
           MyBtn(
@@ -138,11 +164,13 @@ class _LoginPageState extends State<LoginPage> {
             leftText: "手机验证码登录",
             leftOnTap: () {
               setState(() {
-                _isAccountLogin = false;
+                _isCodeLogin = true;
               });
             },
             rightText: "忘记密码?",
-            rightOnTap: () {},
+            rightOnTap: () {
+              ToastUtil.show(msg: "TODO 忘记密码");
+            },
           ),
         ],
       ),
@@ -172,44 +200,53 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: SU.setHeight(80)),
           // 手机号
-          _buildInput("请输入手机号", false, _phoneController),
-          _buildDivider(),
-          // 验证码
-          _isGetCode ? _buildCodeInput() : const SizedBox(),
-          _buildDivider(),
-          SizedBox(height: SU.setHeight(80)),
-          // 登录按钮
-          MyBtn(
-            onPressed: () {
-              // TODO 发送手机验证码
+          MyInput(
+            hintText: "请输入手机号",
+            fontSize: 46,
+            controller: _phoneController,
+            keyboardType: TextInputType.number,
+            onChanged: (v) {
               setState(() {
-                _isGetCode = true;
-                // _isShowMask = true;
-                // Future.delayed(Duration(seconds: 2), () {
-                //   setState(() {
-                //     _isShowMask = false;
-                //   });
-                // });
+                _isShowCodeInput = false;
               });
             },
+          ),
+          // 验证码
+          _isShowCodeInput ? _buildCodeInput() : const SizedBox(),
+          const MyDivider(),
+          SizedBox(height: SU.setHeight(80)),
+          // 按钮
+          MyBtn(
+            onPressed: () {
+              if (!_isShowCodeInput) {
+                _sendCode(_phoneController.text.trim());
+              } else {
+                setState(() {
+                  _isShowMask = true;
+                  // TODO 发送登录请求
+                });
+              }
+            },
             child: MyText(
-              text: _isGetCode ? "登录" : "获取验证码",
+              text: _isShowCodeInput ? "登录" : "获取验证码",
               fontSize: 52,
             ),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
           ),
           SizedBox(height: SU.setHeight(30)),
-          // 账号密码登录，收不到短信
+          // 账号密码登录，收不到短信文字
           _buildLoginSwitch(
             leftText: "账号密码登录",
             leftOnTap: () {
               setState(() {
-                _isAccountLogin = true;
+                _isCodeLogin = false;
               });
             },
             rightText: "收不到短信?",
-            rightOnTap: () {},
+            rightOnTap: () {
+              ToastUtil.show(msg: "TODO 收不到短信");
+            },
           ),
         ],
       ),
@@ -219,13 +256,17 @@ class _LoginPageState extends State<LoginPage> {
   /// 第三方登录
   _buildThirdLogin() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 第三方登录文字
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Expanded(child: _buildDivider()),
+            Expanded(
+              child: MyDivider(
+                color: Colors.grey[300],
+                indent: 20,
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: MyText(
@@ -234,7 +275,12 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.grey,
               ),
             ),
-            Expanded(child: _buildDivider()),
+            Expanded(
+              child: MyDivider(
+                color: Colors.grey[300],
+                endIndent: 20,
+              ),
+            ),
           ],
         ),
         // 第三方APP图标
@@ -253,56 +299,60 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // 输入框
-  _buildInput(String hintText, bool isPassword, TextEditingController controller) {
-    return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      cursorWidth: 2,
-      cursorColor: StyleConstant.primaryColor,
-      cursorRadius: const Radius.circular(10),
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: SU.setFontSize(46),
-      ),
-      textAlignVertical: TextAlignVertical.bottom,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: Colors.grey[400],
-          fontSize: SU.setFontSize(46),
-        ),
-      ),
-    );
-  }
-
-  // 验证码输入框
+  /// 验证码输入框
   _buildCodeInput() {
     return Row(
       children: [
-        Expanded(child: _buildInput("请输入验证码", false, _codeController)),
-        Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey,
-              width: 0.1,
-            ),
-            borderRadius: BorderRadius.circular(5),
+        // 输入验证码区域
+        Expanded(
+          child: MyInput(
+            hintText: "请输入验证码",
+            fontSize: 46,
+            controller: _codeController,
           ),
-          child: const MyText(
-            text: "获取验证码",
-            fontSize: 36,
+        ),
+        // 获取验证码按钮
+        GestureDetector(
+          onTap: () {
+            if (!_isSendCode) {
+              setState(() {
+                _isSendCode = true;
+              });
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey,
+                width: 0.1,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: _isSendCode
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const MyText(
+                        text: "重新获取",
+                        fontSize: 36,
+                        color: Colors.grey,
+                      ),
+                      MyCountdown(onFinished: () {
+                        setState(() {
+                          _isSendCode = false;
+                        });
+                      }),
+                    ],
+                  )
+                : const MyText(
+                    text: "获取验证码",
+                    fontSize: 36,
+                  ),
           ),
         ),
       ],
     );
-  }
-
-  // 输入框下面的分割线
-  _buildDivider() {
-    return Divider(color: Colors.grey[400], height: 0);
   }
 
   // 切换登录方式和忘记密码文字
@@ -337,16 +387,18 @@ class _LoginPageState extends State<LoginPage> {
 
   // 第三方app图标子项
   _buildThirdAppIcon(IconData icon, Color backgroundColor) {
-    return CircleAvatar(
-      radius: SU.setHeight(50),
-      backgroundColor: backgroundColor,
-      child: MyIconBtn(
-        onTap: () {
-          ToastUtil.show(msg: "TODO 跳转第三方APP登录");
-        },
-        icon: icon,
-        color: Colors.white,
-        size: 50,
+    return GestureDetector(
+      onTap: () {
+        ToastUtil.show(msg: "TODO 跳转第三方APP登录");
+      },
+      child: CircleAvatar(
+        radius: SU.setHeight(50),
+        backgroundColor: backgroundColor,
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: SU.setFontSize(50),
+        ),
       ),
     );
   }
