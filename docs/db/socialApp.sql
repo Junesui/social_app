@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2022-03-13 15:37:11                          */
+/* Created on:     2022-03-20 21:06:14                          */
 /*==============================================================*/
 
 
@@ -520,7 +520,7 @@ create table t_user
    vip_end_at           BIGINT unsigned comment 'vip到期时间',
    is_new_user          BOOLEAN comment '是否是新用户',
    is_dangerous_user    BOOLEAN comment '是否是危险用户',
-   status               VARCHAR(30) comment '状态',
+   status               TINYINT unsigned comment '状态',
    is_deleted           BOOLEAN comment '是否删除',
    created_at           BIGINT unsigned not null comment '创建时间',
    updated_at           BIGINT unsigned not null comment '更新时间',
@@ -538,9 +538,9 @@ create table t_user_auth
 (
    id                   BIGINT unsigned not null auto_increment comment 'ID',
    user_id              BIGINT unsigned not null comment '用户ID',
-   type                 TINYINT unsigned not null comment '登录类型（0: "phone", 1: "wechat", 2: "qq", 3: "weibo"）',
-   identifier           VARCHAR(255) not null comment '登录的用户名',
-   credential           VARCHAR(255) not null comment '登录的密码',
+   type                 TINYINT unsigned not null comment '登录类型（0: "phone", 1: "account",2: "qq", 3: "wechat", 4: "weibo"）',
+   username             VARCHAR(255) not null comment '登录的用户名',
+   password             VARCHAR(255) not null comment '登录的密码',
    salt                 char(10) comment '盐（密码加密使用）',
    is_deleted           BOOLEAN comment '是否删除',
    created_at           BIGINT unsigned not null comment '创建时间',
