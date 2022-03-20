@@ -15,8 +15,10 @@ class MyErrorInterceptor extends Interceptor {
     HttpException appException = HttpException.create(err);
 
     // TODO 错误日志上传
-    // err.error = appException;
-    // return super.onError(err, handler);
+    print("错误日志上传: ${err.error} - ${err.requestOptions.uri}");
+
+    err.error = appException;
+    return super.onError(err, handler);
   }
 
   /// 处理网络连接

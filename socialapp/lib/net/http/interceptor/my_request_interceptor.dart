@@ -9,7 +9,7 @@ class MyRequestInterceptor extends Interceptor {
 
     // 添加请求头
     // options.headers.addAll();
-
+    // print(options.uri.toString());
     return super.onRequest(options, handler);
   }
 }

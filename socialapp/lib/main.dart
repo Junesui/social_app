@@ -2,16 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:socialapp/net/api.dart';
+import 'package:socialapp/config/global_config.dart';
 import 'package:socialapp/net/http/http_util.dart';
 import 'package:socialapp/router/router.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
-void main() {
+String _initialRoute = RouterName.welcome;
+void main() async {
+  // 确保拥有 WidgetsBinding (解决异步初始化导致报错)
+  WidgetsFlutterBinding.ensureInitialized();
+
   // 初始化
-  _init();
+  await _init();
 
   runApp(const MyApp());
 
@@ -20,6 +24,24 @@ void main() {
   //     const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   // 设置状态栏文字为黑色
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+}
+
+/// 全局初始化
+_init() async {
+  // 初始化路由
+  _initialRoute = await _getInitRoute();
+
+  // 网络请求初始化
+  HttpUtil.init(baseUrl: GlobalConfig.httpBaseUrl);
+}
+
+/// 获取初始化路由
+Future<String> _getInitRoute() async {
+  // TODO 没有登录，跳转欢迎页
+
+  // TODO 否则跳转到首页
+
+  return RouterName.welcome;
 }
 
 class MyApp extends StatefulWidget {
@@ -38,7 +60,7 @@ class _MyAppState extends State<MyApp> {
       builder: () => _buildPullToRefreshConf(
         MaterialApp(
           debugShowCheckedModeBanner: false,
-          initialRoute: RouterName.welcome,
+          initialRoute: _initialRoute,
           onGenerateRoute: onGenerateRoute,
 
           // 主题
@@ -118,10 +140,4 @@ class _MyAppState extends State<MyApp> {
       child: child,
     );
   }
-}
-
-/// 全局初始化
-_init() {
-  // 网络请求初始化
-  HttpUtil.init(baseUrl: Api.baseUrl);
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
+import 'package:socialapp/constant/phone_code_constant.dart';
+import 'package:socialapp/constant/user_constant.dart';
+import 'package:socialapp/net/dao/common_dao.dart';
+import 'package:socialapp/net/dao/user_dao.dart';
+import 'package:socialapp/net/http/api_response.dart';
 import 'package:socialapp/util/format_valid_util.dart';
 import 'package:socialapp/util/screen_util.dart';
 import 'package:socialapp/util/toast_util.dart';
@@ -49,20 +54,41 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // 发送手机验证码
-  _sendCode(String phoneNum) {
-    if (phoneNum.isEmpty) {
+  _sendCode(String phone) async {
+    if (phone.isEmpty) {
       return;
     }
-    // 校验手机号格式
-    bool _success = FormatValidUtil.isChinaPhone(phoneNum);
-    if (!_success) {
+    // 验证手机号格式
+    bool success = FormatValidUtil.isChinaPhone(phone);
+    if (!success) {
       ToastUtil.show(msg: "手机号码格式不正确");
       return;
     }
-    setState(() {
-      _isShowCodeInput = true;
-      _isSendCode = true;
-      // TODO 发送手机验证码
+    // 发送验证码
+    ApiResponse response = await CommonDao.sendPhoneCode(phone, PhoneCodeConstant.codeTypeLogin);
+    ApiResponse.goon(response, (data) {
+      setState(() {
+        _isShowCodeInput = true;
+        _isSendCode = true;
+      });
+    });
+  }
+
+  // 登录
+  _login(String username, String password, int loginType) async {
+    // 验证验证码
+    if (loginType == UserConstant.loginTypePhoneCode && password.length != 6) {
+      ToastUtil.show(msg: "验证码错误");
+      return;
+    }
+    setState(() async {
+      _isShowMask = true;
+      ApiResponse response = await UserDao.login(username, password, loginType);
+      ApiResponse.goon(response, (data) {
+        print("跳转到首页");
+        // Navigator.of(context).pushNamed(RouterName.root);
+      });
+      _isShowMask = false;
     });
   }
 
@@ -141,15 +167,11 @@ class _LoginPageState extends State<LoginPage> {
           // 登录按钮
           MyBtn(
             onPressed: () {
-              setState(() {
-                _isShowMask = true;
-                // TODO 登录
-                Future.delayed(const Duration(seconds: 2), () {
-                  setState(() {
-                    _isShowMask = false;
-                  });
-                });
-              });
+              _login(
+                _usernameController.text.trim(),
+                _passwordController.text.trim(),
+                UserConstant.loginTypeAccount,
+              );
             },
             child: const MyText(
               text: "登录",
@@ -187,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 手机验证码登录标题
+          // 标题
           const MyText(
             text: "手机验证码登录",
             fontSize: 70,
@@ -219,12 +241,12 @@ class _LoginPageState extends State<LoginPage> {
           MyBtn(
             onPressed: () {
               if (!_isShowCodeInput) {
+                // 发送验证码
                 _sendCode(_phoneController.text.trim());
               } else {
-                setState(() {
-                  _isShowMask = true;
-                  // TODO 发送登录请求
-                });
+                // 登录
+                _login(_phoneController.text.trim(), _codeController.text.trim(),
+                    UserConstant.loginTypePhoneCode);
               }
             },
             child: MyText(
@@ -315,9 +337,7 @@ class _LoginPageState extends State<LoginPage> {
         GestureDetector(
           onTap: () {
             if (!_isSendCode) {
-              setState(() {
-                _isSendCode = true;
-              });
+              _sendCode(_phoneController.text.trim());
             }
           },
           child: Container(

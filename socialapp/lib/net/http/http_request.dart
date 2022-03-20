@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:socialapp/config/global_config.dart';
 import 'package:socialapp/net/http/interceptor/my_error_interceptor.dart';
 import 'package:socialapp/net/http/interceptor/my_request_interceptor.dart';
 
@@ -20,13 +24,20 @@ class HttpRequest {
     dio.interceptors.add(MyRequestInterceptor());
     // 添加error拦截器
     dio.interceptors.add(MyErrorInterceptor());
+
+    // 开发模式下禁用HTTPS证书校验
+    if (GlobalConfig.isDev) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      };
+    }
   }
 
   /// 初始化
   void init({
     String? baseUrl,
-    int connectTimeout = 15000,
-    int receiveTimeout = 15000,
+    int connectTimeout = 10000,
+    int receiveTimeout = 10000,
     Map<String, String>? headers,
   }) {
     HttpRequest._instance;
@@ -64,7 +75,7 @@ class HttpRequest {
   }
 
   /// post 请求
-  Future post(String path, {data, CancelToken? cancelToken}) async {
+  Future post(String path, Map data, {CancelToken? cancelToken}) async {
     Response response = await dio.post(
       path,
       data: data,
