@@ -17,8 +17,8 @@ public class R {
     private Integer code;
     // 消息
     private String message;
-
-    private Map<String, Object> data = new HashMap<String, Object>();
+    // 数据
+    private Object data;
 
     // 私有构造方法
     private R() {
@@ -43,8 +43,8 @@ public class R {
     }
 
     // 设置数据
-    public R data(String key, Object value) {
-        this.data.put(key, value);
+    public R data(Object data) {
+        this.data = data;
         return this;
     }
 
