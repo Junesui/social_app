@@ -1,8 +1,5 @@
 package com.z.common;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Data;
 
 /**

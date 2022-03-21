@@ -1,7 +1,7 @@
 package com.z.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -14,8 +14,8 @@ public class UserAuth implements Serializable {
     private Long id;
     private Long userId;
     private Integer type;
-    private String identifier;
-    private String credential;
+    private String username;
+    private String password;
     private String salt;
     private Boolean isDeleted;
     private Long createdAt;

@@ -5,7 +5,10 @@ package com.z.constant;
  */
 public class UserConstant {
 
-    // ----- 登录类型 -----
+    // 用户登录成功后，放入请求头中令牌的名称
+    public static final String TOKEN_NAME = "loginToken";
+
+    /********************* 登录类型 *********************/
     // 手机验证码登录
     public static final Integer LOGIN_TYPE_PHONE_CODE = 0;
     // 账号密码登录
@@ -16,4 +19,5 @@ public class UserConstant {
     public static final Integer LOGIN_TYPE_WECHAT = 3;
     // 微博登录
     public static final Integer LOGIN_TYPE_WEIBO = 4;
+
 }

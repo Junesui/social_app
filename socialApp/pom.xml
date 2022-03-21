@@ -21,6 +21,7 @@
 		<druid.boot.version>1.2.4</druid.boot.version>
 		<fastjson.version>1.2.75</fastjson.version>
 		<hutool.version>5.7.22</hutool.version>
+		<jwt.version>3.16.0</jwt.version>
 	</properties>
 
 	<dependencies>
@@ -91,6 +92,13 @@
 			<artifactId>hutool-all</artifactId>
 			<version>${hutool.version}</version>
 		</dependency>
+		
+		<!-- JWT -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
 
 
 		<!-- devtools -->

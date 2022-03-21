@@ -1,7 +1,6 @@
 package com.z.common;
 
 import lombok.Getter;
-import lombok.ToString;
 
 /***
  * 返回结果状态码和信息定义 
@@ -14,17 +13,18 @@ import lombok.ToString;
  * 12: ...
  */
 @Getter
-@ToString
 public enum ResultCodeEnum {
 
     // 共通
     SUCCESS(10000, "成功"), 
-    UNKNOWN_ERROR(10001,"未知错误"),
+    UNKNOWN_ERROR(10001,"服务器异常"),
     CODE_ERROR(10002,"验证码错误"),
 
     
     
     // 用户
+    NOT_LOGIN(11000,"未登录"),
+    
     
     ;
 

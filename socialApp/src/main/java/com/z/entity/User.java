@@ -1,7 +1,7 @@
 package com.z.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -17,8 +17,8 @@ public class User implements Serializable {
     private String email;
     private String nickname;
     private String biography;
-    private String avatarThumbnail;
     private String avatar;
+    private String avatarThumbnail;
     private String cover;
     private String coverThumbnail;
     private String province;

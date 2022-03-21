@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.z.properties.ThreadPoolConfigProperties;
+
 /**
  * 线程池配置类
  */
