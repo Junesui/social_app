@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:socialapp/constant/common/sk_constant.dart';
@@ -13,10 +15,10 @@ import 'package:socialapp/util/screen_util.dart';
 import 'package:socialapp/util/storage_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_btn.dart';
-import 'package:socialapp/widget/my_countdown.dart';
 import 'package:socialapp/widget/my_divider.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
 import 'package:socialapp/widget/my_input.dart';
+import 'package:socialapp/widget/my_mask_layer.dart';
 import 'package:socialapp/widget/my_text.dart';
 
 int _second = 60;
@@ -40,12 +42,16 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   // 验证码输入框焦点
   final FocusNode _codeFocusNode = FocusNode();
+  // 是否显示遮罩层
+  bool _isShowMask = false;
   // 是否使用手机验证码登录
   bool _isCodeLogin = true;
   // 是否显示手机验证码输入框
   bool _isShowCodeInput = false;
   // 是否已发送验证码
   bool _isSendCode = false;
+  // 倒计时秒数
+  int _second = 60;
 
   // 销毁方法
   @override
@@ -73,6 +79,18 @@ class _LoginPageState extends State<LoginPage> {
       _isSendCode = true;
       _codeFocusNode.requestFocus();
       _codeController.text = "";
+      _second = 60;
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          _second -= 1;
+        });
+        if (_second <= 0) {
+          setState(() {
+            _isSendCode = false;
+          });
+          timer.cancel();
+        }
+      });
     });
     // 发送验证码
     ApiResponse response = await CommonDao.sendPhoneCode(phone, PhoneCodeConstant.codeTypeLogin);
@@ -86,11 +104,20 @@ class _LoginPageState extends State<LoginPage> {
       ToastUtil.show(msg: "验证码错误");
       return;
     }
+    setState(() {
+      _isShowMask = true;
+    });
     ApiResponse response = await UserDao.login(username, password, loginType);
     ApiResponse.goon(response, (token) async {
+      setState(() {
+        _isShowMask = false;
+      });
       // 保存token，跳转到首页
       await StorageUtil.setString(SKConstant.loginToken, token);
       Navigator.of(context).pushNamed(RouterName.root);
+    });
+    setState(() {
+      _isShowMask = false;
     });
   }
 
@@ -100,7 +127,11 @@ class _LoginPageState extends State<LoginPage> {
       // 解决键盘弹起撑起内容导致布局溢出问题
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: _buildBody(),
+        child: MyMaskLayer(
+          child: _buildBody(),
+          isShow: _isShowMask,
+          hintText: "登录中...",
+        ),
       ),
     );
   }
@@ -351,26 +382,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: _isSendCode
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const MyText(
-                        text: "重新获取",
-                        fontSize: 36,
-                        color: Colors.grey,
-                      ),
-                      MyCountdown(onFinished: () {
-                        setState(() {
-                          _isSendCode = false;
-                        });
-                      }),
-                    ],
-                  )
-                : const MyText(
-                    text: "获取验证码",
-                    fontSize: 36,
-                  ),
+            child: MyText(
+              text: _isSendCode ? "重新获取($_second)" : "获取验证码",
+              fontSize: 36,
+              color: _isSendCode ? Colors.grey : null,
+            ),
           ),
         ),
       ],
