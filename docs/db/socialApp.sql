@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2022-03-20 21:06:14                          */
+/* Created on:     2022-03-21 11:40:36                          */
 /*==============================================================*/
 
 
@@ -505,10 +505,10 @@ create table t_user
    userid               VARCHAR(64) not null comment '用户标识ID',
    telephone            VARCHAR(20) comment '手机号',
    email                VARCHAR(50) comment '邮箱',
-   nickname             VARCHAR(255) not null comment '昵称',
+   nickname             VARCHAR(255) comment '昵称',
    biography            VARCHAR(255) comment '个人简介',
-   avatar_thumbnail     VARCHAR(255) comment '头像缩略图URL',
    avatar               VARCHAR(255) comment '头像URL',
+   avatar_thumbnail     VARCHAR(255) comment '头像缩略图URL',
    cover                VARCHAR(255) comment '封面URL',
    cover_thumbnail      VARCHAR(255) comment '封面缩略图URL',
    province             CHAR(10) comment '省份',
@@ -540,7 +540,7 @@ create table t_user_auth
    user_id              BIGINT unsigned not null comment '用户ID',
    type                 TINYINT unsigned not null comment '登录类型（0: "phone", 1: "account",2: "qq", 3: "wechat", 4: "weibo"）',
    username             VARCHAR(255) not null comment '登录的用户名',
-   password             VARCHAR(255) not null comment '登录的密码',
+   password             VARCHAR(255) comment '登录的密码',
    salt                 char(10) comment '盐（密码加密使用）',
    is_deleted           BOOLEAN comment '是否删除',
    created_at           BIGINT unsigned not null comment '创建时间',
