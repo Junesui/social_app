@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:socialapp/config/global_config.dart';
+import 'package:socialapp/constant/common/sk_constant.dart';
 import 'package:socialapp/net/http/http_util.dart';
 import 'package:socialapp/router/router.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/util/storage_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
 String _initialRoute = RouterName.welcome;
@@ -32,16 +34,28 @@ _init() async {
   _initialRoute = await _getInitRoute();
 
   // 网络请求初始化
-  HttpUtil.init(baseUrl: GlobalConfig.httpBaseUrl);
+  // 开发模式下为了方便调试设置超时时间
+  if (GlobalConfig.isDev) {
+    HttpUtil.init(
+      baseUrl: GlobalConfig.httpBaseUrl,
+      connectTimeout: 10000000,
+      receiveTimeout: 10000000,
+    );
+  } else {
+    HttpUtil.init(baseUrl: GlobalConfig.httpBaseUrl);
+  }
 }
 
 /// 获取初始化路由
 Future<String> _getInitRoute() async {
-  // TODO 没有登录，跳转欢迎页
-
-  // TODO 否则跳转到首页
-
-  return RouterName.welcome;
+  bool isAgree = await StorageUtil.getBool(SKConstant.welcomeIsAgree) ?? false;
+  // 如果没有同意协议，跳转到欢迎页
+  if (!isAgree) {
+    return RouterName.welcome;
+  } else {
+    // 否则跳转到首页
+    return RouterName.root;
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -66,9 +80,10 @@ class _MyAppState extends State<MyApp> {
           // 主题
           theme: ThemeData(
             brightness: Brightness.light,
-            // 取消一些组件的默认点击效果
-            // highlightColor: Colors.transparent,
-            // splashColor: Colors.transparent,
+            // 点击高亮颜色设为透明
+            highlightColor: Colors.transparent,
+            // 溅墨颜色设为透明
+            splashColor: Colors.transparent,
           ),
         ),
       ),

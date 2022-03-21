@@ -50,7 +50,7 @@ class HttpUtil {
         data,
         cancelToken: cancelToken,
       );
-      return ApiResponse.ok(respData).data!["data"];
+      return ApiResponse.ok(respData);
     } on DioError catch (e) {
       return ApiResponse.error(e.error);
     }

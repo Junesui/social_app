@@ -15,6 +15,10 @@ class MyInput extends StatelessWidget {
   final bool isObscure;
   // 键盘类型
   final TextInputType? keyboardType;
+  // 自动获取焦点
+  final bool autofocus;
+  // 焦点节点
+  final FocusNode? focusNode;
   // 输入改变回调
   final ValueChanged<String>? onChanged;
 
@@ -25,6 +29,8 @@ class MyInput extends StatelessWidget {
     this.controller,
     this.isObscure = false,
     this.keyboardType,
+    this.autofocus = false,
+    this.focusNode,
     this.onChanged,
   }) : super(key: key);
 
@@ -37,6 +43,8 @@ class MyInput extends StatelessWidget {
           controller: controller,
           obscureText: isObscure,
           keyboardType: keyboardType,
+          autofocus: autofocus,
+          focusNode: focusNode,
           cursorWidth: 2,
           cursorColor: StyleConstant.primaryColor,
           cursorRadius: const Radius.circular(10),

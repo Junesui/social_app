@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
+import 'package:socialapp/constant/common/sk_constant.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/constant/phone_code_constant.dart';
 import 'package:socialapp/constant/user_constant.dart';
 import 'package:socialapp/net/dao/common_dao.dart';
 import 'package:socialapp/net/dao/user_dao.dart';
 import 'package:socialapp/net/http/api_response.dart';
+import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/format_valid_util.dart';
 import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/util/storage_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_btn.dart';
 import 'package:socialapp/widget/my_countdown.dart';
 import 'package:socialapp/widget/my_divider.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
 import 'package:socialapp/widget/my_input.dart';
-import 'package:socialapp/widget/my_mask_layer.dart';
 import 'package:socialapp/widget/my_text.dart';
+
+int _second = 60;
 
 /// 登录页面
 class LoginPage extends StatefulWidget {
@@ -34,8 +38,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   // 密码输入框控制器
   final TextEditingController _passwordController = TextEditingController();
-  // 是否显示遮罩层
-  bool _isShowMask = false;
+  // 验证码输入框焦点
+  final FocusNode _codeFocusNode = FocusNode();
   // 是否使用手机验证码登录
   bool _isCodeLogin = true;
   // 是否显示手机验证码输入框
@@ -64,14 +68,15 @@ class _LoginPageState extends State<LoginPage> {
       ToastUtil.show(msg: "手机号码格式不正确");
       return;
     }
+    setState(() {
+      _isShowCodeInput = true;
+      _isSendCode = true;
+      _codeFocusNode.requestFocus();
+      _codeController.text = "";
+    });
     // 发送验证码
     ApiResponse response = await CommonDao.sendPhoneCode(phone, PhoneCodeConstant.codeTypeLogin);
-    ApiResponse.goon(response, (data) {
-      setState(() {
-        _isShowCodeInput = true;
-        _isSendCode = true;
-      });
-    });
+    ApiResponse.goon(response, (data) {});
   }
 
   // 登录
@@ -81,14 +86,11 @@ class _LoginPageState extends State<LoginPage> {
       ToastUtil.show(msg: "验证码错误");
       return;
     }
-    setState(() async {
-      _isShowMask = true;
-      ApiResponse response = await UserDao.login(username, password, loginType);
-      ApiResponse.goon(response, (data) {
-        print("跳转到首页");
-        // Navigator.of(context).pushNamed(RouterName.root);
-      });
-      _isShowMask = false;
+    ApiResponse response = await UserDao.login(username, password, loginType);
+    ApiResponse.goon(response, (token) async {
+      // 保存token，跳转到首页
+      await StorageUtil.setString(SKConstant.loginToken, token);
+      Navigator.of(context).pushNamed(RouterName.root);
     });
   }
 
@@ -98,11 +100,7 @@ class _LoginPageState extends State<LoginPage> {
       // 解决键盘弹起撑起内容导致布局溢出问题
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: MyMaskLayer(
-          isShow: _isShowMask,
-          child: _buildBody(),
-          hintText: "登录中...",
-        ),
+        child: _buildBody(),
       ),
     );
   }
@@ -245,8 +243,11 @@ class _LoginPageState extends State<LoginPage> {
                 _sendCode(_phoneController.text.trim());
               } else {
                 // 登录
-                _login(_phoneController.text.trim(), _codeController.text.trim(),
-                    UserConstant.loginTypePhoneCode);
+                _login(
+                  _phoneController.text.trim(),
+                  _codeController.text.trim(),
+                  UserConstant.loginTypePhoneCode,
+                );
               }
             },
             child: MyText(
@@ -331,6 +332,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: "请输入验证码",
             fontSize: 46,
             controller: _codeController,
+            focusNode: _codeFocusNode,
           ),
         ),
         // 获取验证码按钮
