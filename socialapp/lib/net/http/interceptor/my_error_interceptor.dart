@@ -9,7 +9,7 @@ class MyErrorInterceptor extends Interceptor {
   @override
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     // 网络连接
-    _handleNetWorkError(err);
+    await _handleNetWorkError(err);
 
     // 错误统一处理
     HttpException appException = HttpException.create(err);

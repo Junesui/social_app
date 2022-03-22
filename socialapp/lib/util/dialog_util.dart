@@ -8,12 +8,14 @@ class DialogUtil {
   /// [确定][取消]弹窗框
   static Future okCancel(
     BuildContext context, {
+    String title = "提示",
     required String text,
     required VoidCallback btnOkOnPress,
   }) {
     return AwesomeDialog(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       context: context,
-      title: "提示",
+      title: title,
       desc: text,
       btnOkText: "确定",
       btnCancelText: "取消",

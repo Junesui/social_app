@@ -9,6 +9,9 @@ class RouterName {
   static const login = "/login";
   // 根路径
   static const root = "/";
+  // 发布页
+  static const post = "/post";
+
   // 搜索页
   static const search = "/search";
   // qr页
@@ -25,8 +28,6 @@ class RouterName {
   static const game = "/game";
   // 用户信息页
   static const userInfo = "/user_info";
-  // 发布页
-  static const post = "/post";
   // 图片预览页
   static const postImgPreview = "/post_img_preview";
   // 图片预览页

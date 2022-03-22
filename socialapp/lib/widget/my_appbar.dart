@@ -29,7 +29,7 @@ class MyAppBar extends AppBar {
     this.actionColor,
     this.actionIconSize,
     this.actionIconOnTap,
-    this.bgColor,
+    this.bgColor = Colors.transparent,
   }) : super(key: key);
 
   @override

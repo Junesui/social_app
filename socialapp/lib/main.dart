@@ -79,6 +79,9 @@ class _MyAppState extends State<MyApp> {
 
           // 主题
           theme: ThemeData(
+            // 为了使AppBar文字颜色自适应，primarySwatch设置一个颜色
+            primarySwatch: Colors.yellow,
+            // 日间模式
             brightness: Brightness.light,
             // 点击高亮颜色设为透明
             highlightColor: Colors.transparent,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:socialapp/page/common/photo_view_page.dart';
 import 'package:socialapp/page/login/login_page.dart';
+import 'package:socialapp/page/post/post_page.dart';
 import 'package:socialapp/page/tab/tabs.dart';
 import 'package:socialapp/page/welcome/welcome_page.dart';
 import 'package:socialapp/router/router_name.dart';
@@ -11,6 +12,7 @@ final Map<String, Function> routes = {
   RouterName.welcome: (context) => WelcomePage(),
   RouterName.login: (context) => LoginPage(),
   RouterName.root: (context) => Tabs(),
+  RouterName.post: (context) => PostPage(),
 };
 
 //固定写法 [CupertinoPageRoute: ios风格的路由]

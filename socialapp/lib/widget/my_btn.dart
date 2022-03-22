@@ -12,9 +12,17 @@ class MyBtn extends StatelessWidget {
   final double? width;
   // 内边距
   final EdgeInsetsGeometry? padding;
+  // 按钮颜色
+  final Color? color;
 
-  const MyBtn({Key? key, required this.onPressed, required this.child, this.width, this.padding})
-      : super(key: key);
+  const MyBtn({
+    Key? key,
+    required this.onPressed,
+    required this.child,
+    this.width,
+    this.padding,
+    this.color = StyleConstant.primaryColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,7 @@ class MyBtn extends StatelessWidget {
         onPressed: onPressed,
         child: child,
         style: ElevatedButton.styleFrom(
-          primary: StyleConstant.primaryColor,
+          primary: color,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SU.setHeight(100))),
           padding: padding,

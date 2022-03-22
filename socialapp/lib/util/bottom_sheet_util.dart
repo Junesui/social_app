@@ -6,7 +6,6 @@ class BottomSheetUtil {
   static show(BuildContext context, List<BottomSheetParam> params) {
     showModalBottomSheet(
         context: context,
-        backgroundColor: Colors.black,
         builder: (context) {
           return Padding(
             padding: const EdgeInsets.only(top: 15, bottom: 6),
@@ -40,15 +39,15 @@ class BottomSheetUtil {
               children: [
                 MyText(
                   text: text,
-                  fontSize: 46,
+                  fontSize: 42,
                 ),
               ],
             ),
             // 分割线
             Divider(
-              color: Colors.grey,
-              height: 32,
-              thickness: isHasDivide ? null : 8,
+              color: Colors.grey[200],
+              height: 30,
+              thickness: isHasDivide ? 0.8 : 8,
             )
           ],
         ));
@@ -61,7 +60,7 @@ class BottomSheetUtil {
         Navigator.of(context).pop();
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.only(top: 5, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -69,7 +68,7 @@ class BottomSheetUtil {
               child: MyText(
                 text: "取消",
                 color: Colors.red,
-                fontSize: 46,
+                fontSize: 42,
               ),
             ),
           ],

@@ -24,6 +24,7 @@ class _ChatPageState extends State<ChatPage> {
               child: MyText(
                 text: "To Welcome Page",
                 fontSize: 50,
+                color: Colors.white,
               )),
         ),
       ),

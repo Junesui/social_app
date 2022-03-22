@@ -21,8 +21,6 @@ import 'package:socialapp/widget/my_input.dart';
 import 'package:socialapp/widget/my_mask_layer.dart';
 import 'package:socialapp/widget/my_text.dart';
 
-int _second = 60;
-
 /// 登录页面
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -44,6 +42,8 @@ class _LoginPageState extends State<LoginPage> {
   final FocusNode _codeFocusNode = FocusNode();
   // 是否显示遮罩层
   bool _isShowMask = false;
+  // 遮罩层提示文字
+  String? _maskHintText;
   // 是否使用手机验证码登录
   bool _isCodeLogin = true;
   // 是否显示手机验证码输入框
@@ -53,60 +53,71 @@ class _LoginPageState extends State<LoginPage> {
   // 倒计时秒数
   int _second = 60;
 
-  // 销毁方法
+  /// 销毁方法
   @override
   void dispose() {
     _phoneController.dispose();
     _codeController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    _codeFocusNode.dispose();
     super.dispose();
   }
 
-  // 发送手机验证码
+  /// 发送手机验证码
   _sendCode(String phone) async {
-    if (phone.isEmpty) {
-      return;
-    }
     // 验证手机号格式
     bool success = FormatValidUtil.isChinaPhone(phone);
     if (!success) {
       ToastUtil.show(msg: "手机号码格式不正确");
       return;
     }
+    // 手机号格式正确，显示遮罩层
     setState(() {
-      _isShowCodeInput = true;
-      _isSendCode = true;
-      _codeFocusNode.requestFocus();
-      _codeController.text = "";
-      _second = 60;
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _second -= 1;
-        });
-        if (_second <= 0) {
-          setState(() {
-            _isSendCode = false;
-          });
-          timer.cancel();
-        }
-      });
+      _isShowMask = true;
+      _maskHintText = "发送验证码";
     });
     // 发送验证码
     ApiResponse response = await CommonDao.sendPhoneCode(phone, PhoneCodeConstant.codeTypeLogin);
-    ApiResponse.goon(response, (data) {});
+    ApiResponse.goon(response, (data) {
+      setState(() {
+        _isShowCodeInput = true;
+        _isSendCode = true;
+        _codeFocusNode.requestFocus();
+        _codeController.text = "";
+        _second = 60;
+        Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            _second -= 1;
+          });
+          if (_second <= 0) {
+            setState(() {
+              _isSendCode = false;
+            });
+            timer.cancel();
+          }
+        });
+      });
+    });
+    // 隐藏遮罩层
+    setState(() {
+      _isShowMask = false;
+    });
   }
 
-  // 登录
+  /// 登录
   _login(String username, String password, int loginType) async {
-    // 验证验证码
+    // 如果是手机验证码登录，验证验证码基本格式
     if (loginType == UserConstant.loginTypePhoneCode && password.length != 6) {
       ToastUtil.show(msg: "验证码错误");
       return;
     }
+    // 基本格式验证通过，显示遮罩层
     setState(() {
       _isShowMask = true;
+      _maskHintText = "登录中...";
     });
+    // 发送登录请求
     ApiResponse response = await UserDao.login(username, password, loginType);
     ApiResponse.goon(response, (token) async {
       setState(() {
@@ -116,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
       await StorageUtil.setString(SKConstant.loginToken, token);
       Navigator.of(context).pushNamed(RouterName.root);
     });
+    // 隐藏遮罩层
     setState(() {
       _isShowMask = false;
     });
@@ -130,13 +142,13 @@ class _LoginPageState extends State<LoginPage> {
         child: MyMaskLayer(
           child: _buildBody(),
           isShow: _isShowMask,
-          hintText: "登录中...",
+          hintText: _maskHintText,
         ),
       ),
     );
   }
 
-  /// Body
+  /// 主内容
   _buildBody() {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -181,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 账号密码登录标题
+          // 标题
           const MyText(
             text: "账号密码登录",
             fontSize: 70,
@@ -189,9 +201,18 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: SU.setHeight(80)),
           // 用户名
-          MyInput(hintText: "手机号", fontSize: 46, controller: _usernameController),
+          MyInput(
+            hintText: "手机号",
+            fontSize: 46,
+            controller: _usernameController,
+          ),
           // 密码
-          MyInput(hintText: "密码", fontSize: 46, controller: _passwordController, isObscure: true),
+          MyInput(
+            hintText: "密码",
+            fontSize: 46,
+            controller: _passwordController,
+            isObscure: true,
+          ),
           SizedBox(height: SU.setHeight(80)),
           // 登录按钮
           MyBtn(
@@ -205,6 +226,7 @@ class _LoginPageState extends State<LoginPage> {
             child: const MyText(
               text: "登录",
               fontSize: 52,
+              color: Colors.white,
             ),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -284,6 +306,7 @@ class _LoginPageState extends State<LoginPage> {
             child: MyText(
               text: _isShowCodeInput ? "登录" : "获取验证码",
               fontSize: 52,
+              color: Colors.white,
             ),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -304,52 +327,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-    );
-  }
-
-  /// 第三方登录
-  _buildThirdLogin() {
-    return Column(
-      children: [
-        /// 第三方登录文字
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              child: MyDivider(
-                color: Colors.grey[300],
-                indent: 20,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: MyText(
-                text: "第三方登录",
-                fontSize: 32,
-                color: Colors.grey,
-              ),
-            ),
-            Expanded(
-              child: MyDivider(
-                color: Colors.grey[300],
-                endIndent: 20,
-              ),
-            ),
-          ],
-        ),
-        // 第三方APP图标
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: SU.setHeight(80)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildThirdAppIcon(FontAwesome.qq, Colors.blue),
-              _buildThirdAppIcon(FontAwesome.wechat, Colors.green),
-              _buildThirdAppIcon(FontAwesome.weibo, Colors.lightBlueAccent),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -387,6 +364,52 @@ class _LoginPageState extends State<LoginPage> {
               fontSize: 36,
               color: _isSendCode ? Colors.grey : null,
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 第三方登录
+  _buildThirdLogin() {
+    return Column(
+      children: [
+        // 第三方登录文字
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: MyDivider(
+                color: Colors.grey[300],
+                indent: 20,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: MyText(
+                text: "第三方登录",
+                fontSize: 32,
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: MyDivider(
+                color: Colors.grey[300],
+                endIndent: 20,
+              ),
+            ),
+          ],
+        ),
+        // 第三方APP图标
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: SU.setHeight(80)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildThirdAppIcon(FontAwesome.qq, Colors.blue),
+              _buildThirdAppIcon(FontAwesome.wechat, Colors.green),
+              _buildThirdAppIcon(FontAwesome.weibo, Colors.lightBlueAccent),
+            ],
           ),
         ),
       ],

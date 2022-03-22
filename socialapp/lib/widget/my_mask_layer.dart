@@ -8,7 +8,7 @@ class MyMaskLayer extends StatelessWidget {
   // 是否显示
   final bool isShow;
   // 提示文字
-  final String hintText;
+  final String? hintText;
   // 子组件
   final Widget child;
 
@@ -40,7 +40,7 @@ class MyMaskLayer extends StatelessWidget {
                   Expanded(child: Lottie.asset(AssetConstant.loadingAnimation)),
                   // 提示文字
                   MyText(
-                    text: hintText,
+                    text: hintText ?? "",
                     color: Colors.white,
                     fontSize: 30,
                   ),

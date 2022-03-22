@@ -5,6 +5,8 @@ import 'package:socialapp/widget/my_divider.dart';
 
 /// 表单输入框
 class MyInput extends StatelessWidget {
+  // 是否有底部边框
+  final bool isHasBottomLine;
   // 输入框内提示文字
   final String? hintText;
   // 文字大小
@@ -21,9 +23,18 @@ class MyInput extends StatelessWidget {
   final FocusNode? focusNode;
   // 输入改变回调
   final ValueChanged<String>? onChanged;
+  // 输入内容最大长度
+  final int? maxLength;
+  // 计数文字的样式
+  final TextStyle? counterStyle;
+  // 内容内边距是否设为0
+  final bool isCollapsed;
+  // 最大行数 不设置的话只有一行
+  final int? maxLines;
 
   const MyInput({
     Key? key,
+    this.isHasBottomLine = true,
     this.hintText,
     this.fontSize = 32,
     this.controller,
@@ -32,6 +43,10 @@ class MyInput extends StatelessWidget {
     this.autofocus = false,
     this.focusNode,
     this.onChanged,
+    this.maxLength,
+    this.counterStyle,
+    this.isCollapsed = false,
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -41,6 +56,8 @@ class MyInput extends StatelessWidget {
         // 输入区域
         TextFormField(
           controller: controller,
+          maxLength: maxLength,
+          onChanged: onChanged,
           obscureText: isObscure,
           keyboardType: keyboardType,
           autofocus: autofocus,
@@ -49,6 +66,8 @@ class MyInput extends StatelessWidget {
           cursorColor: StyleConstant.primaryColor,
           cursorRadius: const Radius.circular(10),
           textAlignVertical: TextAlignVertical.bottom,
+          minLines: 1,
+          maxLines: maxLines,
           style: TextStyle(
             fontSize: SU.setFontSize(fontSize),
           ),
@@ -59,11 +78,12 @@ class MyInput extends StatelessWidget {
               color: Colors.grey[400],
               fontSize: SU.setFontSize(fontSize),
             ),
+            counterStyle: counterStyle,
+            isCollapsed: isCollapsed,
           ),
-          onChanged: onChanged,
         ),
         // 底边框
-        const MyDivider(),
+        isHasBottomLine ? const MyDivider() : const SizedBox(),
       ],
     );
   }
