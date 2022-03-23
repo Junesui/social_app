@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -8,7 +9,7 @@ import 'package:socialapp/net/http/http_util.dart';
 import 'package:socialapp/router/router.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/util/storage_util.dart';
+import 'package:socialapp/util/sp_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
 String _initialRoute = RouterName.welcome;
@@ -35,7 +36,7 @@ _init() async {
 
   // 网络请求初始化
   // 开发模式下为了方便调试设置超时时间
-  if (GlobalConfig.isDev) {
+  if (kDebugMode) {
     HttpUtil.init(
       baseUrl: GlobalConfig.httpBaseUrl,
       connectTimeout: 10000000,
@@ -48,7 +49,7 @@ _init() async {
 
 /// 获取初始化路由
 Future<String> _getInitRoute() async {
-  bool isAgree = await StorageUtil.getBool(SKConstant.welcomeIsAgree) ?? false;
+  bool isAgree = await SpUtil.getBool(SKConstant.welcomeIsAgree) ?? false;
   // 如果没有同意协议，跳转到欢迎页
   if (!isAgree) {
     return RouterName.welcome;

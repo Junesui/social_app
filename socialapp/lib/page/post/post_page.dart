@@ -38,6 +38,59 @@ class _PostPageState extends State<PostPage> {
     super.dispose();
   }
 
+  /// 拍照
+  _takePhoto() async {
+    // 关闭底部弹窗
+    Navigator.of(context).pop();
+    // 隐藏键盘
+    FocusScope.of(context).requestFocus(FocusNode());
+    // 拍照
+    PermUtil.check([Permission.camera, Permission.storage], context, onGranted: () async {
+      final AssetEntity? entity = await CameraPicker.pickFromCamera(
+        context,
+        theme: CameraPicker.themeData(Colors.orangeAccent),
+      );
+      if (entity != null) {
+        setState(() {
+          if (_pickImgs.length >= 9) {
+            _pickImgs.removeAt(0);
+          }
+          _pickImgs.add(entity);
+        });
+      }
+    });
+  }
+
+  /// 从相册选择
+  _pickImg() async {
+    // 关闭底部弹窗
+    Navigator.of(context).pop();
+    // 隐藏键盘
+    FocusScope.of(context).requestFocus(FocusNode());
+    // 选择图片
+    PermUtil.check([Permission.storage], context, onGranted: () async {
+      List<AssetEntity>? entities = await PickUtil.pick(context, _pickImgs);
+      if (entities.isNotEmpty) {
+        setState(() {
+          _pickImgs = entities;
+        });
+      }
+    });
+  }
+
+  /// 发布
+  _post() async {
+    // 发布类型判断
+    if (_postType == PostConstant.textType) {
+      if (_pickImgs.isNotEmpty) {
+        _postType = PostConstant.imageType;
+      } else {
+        _postType = PostConstant.textType;
+      }
+    }
+    ToastUtil.show(msg: "TODO");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,18 +129,21 @@ class _PostPageState extends State<PostPage> {
       child: Column(
         children: [
           // 文字区域
-          MyInput(
-            controller: _textController,
-            maxLength: 200,
-            fontSize: 43,
-            hintText: "感兴趣的事情或想说的话分享一下吧...",
-            isHasBottomLine: false,
-            isCollapsed: true,
-            maxLines: 99999,
-            counterStyle: TextStyle(
-              color: Colors.grey,
-              fontSize: SU.setFontSize(42),
-              height: 2,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: MyInput(
+              controller: _textController,
+              maxLength: 200,
+              fontSize: 45,
+              hintText: "分享一下最近的心情吧...",
+              isHasBottomLine: false,
+              isCollapsed: true,
+              minLines: 3,
+              maxLines: 99999,
+              counterStyle: TextStyle(
+                color: Colors.grey,
+                fontSize: SU.setFontSize(42),
+              ),
             ),
           ),
           // 图片区域
@@ -100,7 +156,7 @@ class _PostPageState extends State<PostPage> {
   /// 通话和视频按钮
   _buildCallAndVideoBtn() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: Row(
         children: [
           // 通话按钮
@@ -208,7 +264,7 @@ class _PostPageState extends State<PostPage> {
         // 发送按钮
         MyBtn(
           onPressed: () {
-            ToastUtil.show(msg: _postType.toString());
+            _post();
           },
           child: const MyText(
             text: "发布",
@@ -242,45 +298,5 @@ class _PostPageState extends State<PostPage> {
       ),
     );
     BottomSheetUtil.show(context, params);
-  }
-
-  /// 拍照
-  _takePhoto() async {
-    // 关闭底部弹窗
-    Navigator.of(context).pop();
-    // 隐藏键盘
-    FocusScope.of(context).requestFocus(FocusNode());
-    // 拍照
-    PermUtil.check([Permission.camera], context, onGranted: () async {
-      final AssetEntity? entity = await CameraPicker.pickFromCamera(
-        context,
-        theme: CameraPicker.themeData(Colors.orangeAccent),
-      );
-      if (entity != null) {
-        setState(() {
-          if (_pickImgs.length >= 9) {
-            _pickImgs.removeAt(0);
-          }
-          _pickImgs.add(entity);
-        });
-      }
-    });
-  }
-
-  /// 从相册选择
-  _pickImg() async {
-    // 关闭底部弹窗
-    Navigator.of(context).pop();
-    // 隐藏键盘
-    FocusScope.of(context).requestFocus(FocusNode());
-    // 选择图片
-    PermUtil.check([Permission.storage], context, onGranted: () async {
-      List<AssetEntity>? entities = await PickUtil.pick(context, _pickImgs);
-      if (entities.isNotEmpty) {
-        setState(() {
-          _pickImgs = entities;
-        });
-      }
-    });
   }
 }

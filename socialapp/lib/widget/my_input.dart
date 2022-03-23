@@ -29,7 +29,9 @@ class MyInput extends StatelessWidget {
   final TextStyle? counterStyle;
   // 内容内边距是否设为0
   final bool isCollapsed;
-  // 最大行数 不设置的话只有一行
+  // 最新行数
+  final int? minLines;
+  // 最大行数
   final int? maxLines;
 
   const MyInput({
@@ -46,6 +48,7 @@ class MyInput extends StatelessWidget {
     this.maxLength,
     this.counterStyle,
     this.isCollapsed = false,
+    this.minLines = 1,
     this.maxLines,
   }) : super(key: key);
 
@@ -66,7 +69,7 @@ class MyInput extends StatelessWidget {
           cursorColor: StyleConstant.primaryColor,
           cursorRadius: const Radius.circular(10),
           textAlignVertical: TextAlignVertical.bottom,
-          minLines: 1,
+          minLines: minLines,
           maxLines: maxLines,
           style: TextStyle(
             fontSize: SU.setFontSize(fontSize),

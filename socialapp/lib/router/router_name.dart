@@ -11,6 +11,8 @@ class RouterName {
   static const root = "/";
   // 发布页
   static const post = "/post";
+  // 发布时图片预览页
+  static const postImgPreview = "/post_img_preview";
 
   // 搜索页
   static const search = "/search";
@@ -28,8 +30,7 @@ class RouterName {
   static const game = "/game";
   // 用户信息页
   static const userInfo = "/user_info";
-  // 图片预览页
-  static const postImgPreview = "/post_img_preview";
+
   // 图片预览页
   static const report = "/report";
 }

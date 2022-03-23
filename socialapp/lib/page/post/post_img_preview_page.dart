@@ -18,7 +18,7 @@ class PostImgPreviewPage extends StatefulWidget {
 }
 
 class _PostImgPreviewPageState extends State<PostImgPreviewPage> {
-  // 控制器
+  // 页面控制器
   PageController _pageController = PageController(initialPage: 0);
   // 当前页Index
   int _currentIndex = 0;
@@ -45,8 +45,11 @@ class _PostImgPreviewPageState extends State<PostImgPreviewPage> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          // 图片
           _buildImg(),
+          // 关闭按钮
           _buildCloseBtn(),
+          // 圆点指示器
           _buildDotIndicator(),
         ],
       ),
@@ -68,7 +71,7 @@ class _PostImgPreviewPageState extends State<PostImgPreviewPage> {
           },
           onLongPress: () {},
           child: PhotoViewGallery.builder(
-            scrollPhysics: const BouncingScrollPhysics(),
+            scrollPhysics: const PageScrollPhysics(),
             builder: (BuildContext context, int index) {
               return PhotoViewGalleryPageOptions(
                 imageProvider: AssetEntityImageProvider(widget.arguments["imgs"][index]),
@@ -107,7 +110,9 @@ class _PostImgPreviewPageState extends State<PostImgPreviewPage> {
       child: Offstage(
         offstage: widget.arguments["isHiddenCloseBtn"] ?? true,
         child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           icon: const Icon(
             Icons.close,
             size: 30,

@@ -4,7 +4,7 @@ import 'package:socialapp/constant/common/sk_constant.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/util/storage_util.dart';
+import 'package:socialapp/util/sp_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_text.dart';
 
@@ -73,7 +73,7 @@ class _WelcomePageState extends State<WelcomePage> {
         onPressed: () {
           if (_isAgree) {
             // 报错同意协议状态
-            StorageUtil.setBool(SKConstant.welcomeIsAgree, true);
+            SpUtil.setBool(SKConstant.welcomeIsAgree, true);
             // 跳转到登录页
             Navigator.of(context).pushNamed(RouterName.login);
           } else {

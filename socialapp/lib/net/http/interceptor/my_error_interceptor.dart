@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:socialapp/net/http/http_exception.dart';
+import 'package:socialapp/util/log_util.dart';
 
 /// 错误拦截器
 class MyErrorInterceptor extends Interceptor {
@@ -15,7 +16,7 @@ class MyErrorInterceptor extends Interceptor {
     HttpException appException = HttpException.create(err);
 
     // TODO 错误日志上传
-    print("错误日志上传: ${err.error} - ${err.requestOptions.uri}");
+    LogUtil.p("错误日志上传: ${err.error} - ${err.requestOptions.uri}");
 
     err.error = appException;
     return super.onError(err, handler);

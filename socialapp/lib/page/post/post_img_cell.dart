@@ -5,10 +5,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/widget/my_icon_btn.dart';
+import 'package:socialapp/util/toast_util.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-/// 发布图片时候的图片展示组件
+/// 发布图片时候的图片显示组件
 class PostImgCell extends StatefulWidget {
   // 图片列表
   final List<AssetEntity> imgs;
@@ -22,7 +22,7 @@ class PostImgCell extends StatefulWidget {
 class _PostImgCellState extends State<PostImgCell> {
   @override
   Widget build(BuildContext context) {
-    double height = SU.setHeight(360);
+    double height = SU.setHeight(320);
     return Container(
       height: height,
       margin: EdgeInsets.symmetric(
@@ -50,11 +50,25 @@ class _PostImgCellState extends State<PostImgCell> {
           children: [
             // 图片
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  RouterName.postImgPreview,
-                  arguments: {"imgs": widget.imgs, "index": index},
-                );
+              onTap: () async {
+                // 如果图片存在，则跳转到图片预览；否则提示用户并移除图片
+                if (await widget.imgs[index].exists) {
+                  List<AssetEntity> imgs = [];
+                  for (var img in widget.imgs) {
+                    if (await img.exists) {
+                      imgs.add(img);
+                    }
+                  }
+                  Navigator.of(context).pushNamed(
+                    RouterName.postImgPreview,
+                    arguments: {"imgs": imgs, "index": imgs.indexOf(widget.imgs[index])},
+                  );
+                } else {
+                  ToastUtil.show(msg: "图片不存在");
+                  setState(() {
+                    widget.imgs.removeAt(index);
+                  });
+                }
               },
               child: SizedBox(
                 height: height,
@@ -69,15 +83,23 @@ class _PostImgCellState extends State<PostImgCell> {
               ),
             ),
             // 删除按钮
-            _buildBtn(Alignment.topRight, Icons.close, () {
-              setState(() {
-                widget.imgs.removeAt(index);
-              });
-            }),
+            _buildBtn(
+              Alignment.topRight,
+              Icons.close,
+              () {
+                setState(() {
+                  widget.imgs.removeAt(index);
+                });
+              },
+            ),
             // 编辑按钮
-            _buildBtn(Alignment.bottomRight, Icons.edit, () {
-              _cropImg(widget.imgs[index], index);
-            }),
+            _buildBtn(
+              Alignment.bottomRight,
+              Icons.edit,
+              () {
+                _cropImg(widget.imgs[index], index);
+              },
+            ),
           ],
         ),
       ),
@@ -85,19 +107,21 @@ class _PostImgCellState extends State<PostImgCell> {
   }
 
   /// 图片上的按钮
-  _buildBtn(Alignment alignment, IconData icon, VoidCallback ontap) {
+  _buildBtn(Alignment alignment, IconData icon, VoidCallback onTap) {
     return Align(
       alignment: alignment,
       child: Padding(
         padding: const EdgeInsets.all(5),
-        child: CircleAvatar(
-          radius: SU.setHeight(32),
-          backgroundColor: Colors.grey,
-          child: MyIconBtn(
-            onTap: ontap,
-            icon: icon,
-            size: 50,
-            color: Colors.white,
+        child: GestureDetector(
+          onTap: onTap,
+          child: CircleAvatar(
+            radius: SU.setHeight(30),
+            backgroundColor: Colors.grey,
+            child: Icon(
+              icon,
+              size: SU.setFontSize(42),
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -106,12 +130,21 @@ class _PostImgCellState extends State<PostImgCell> {
 
   /// 图片裁剪
   _cropImg(AssetEntity img, int index) async {
+    // 如果图片不存在，提示用户并移除图片
+    if (!await img.exists) {
+      ToastUtil.show(msg: "图片不存在");
+      setState(() {
+        widget.imgs.removeAt(index);
+      });
+      return;
+    }
+
     // 裁剪
     File? croppedFile = await ImageCropper().cropImage(
       sourcePath: await img.originFile.then((file) => file?.path ?? ""),
       androidUiSettings: const AndroidUiSettings(
         toolbarTitle: '图片编辑',
-        toolbarColor: Colors.yellow,
+        toolbarColor: Colors.black,
         toolbarWidgetColor: Colors.white,
         initAspectRatio: CropAspectRatioPreset.original,
         lockAspectRatio: false,

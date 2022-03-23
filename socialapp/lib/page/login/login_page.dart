@@ -12,7 +12,7 @@ import 'package:socialapp/net/http/api_response.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/format_valid_util.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/util/storage_util.dart';
+import 'package:socialapp/util/sp_util.dart';
 import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_btn.dart';
 import 'package:socialapp/widget/my_divider.dart';
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
         _isShowMask = false;
       });
       // 保存token，跳转到首页
-      await StorageUtil.setString(SKConstant.loginToken, token);
+      await SpUtil.setString(SKConstant.loginToken, token);
       Navigator.of(context).pushNamed(RouterName.root);
     });
     // 隐藏遮罩层

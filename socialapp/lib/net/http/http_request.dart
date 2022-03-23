@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:socialapp/config/global_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:socialapp/net/http/interceptor/my_error_interceptor.dart';
+import 'package:socialapp/net/http/interceptor/my_log_interceptor.dart';
 import 'package:socialapp/net/http/interceptor/my_request_interceptor.dart';
 
 /// http 请求类
@@ -25,11 +26,14 @@ class HttpRequest {
     // 添加error拦截器
     dio.interceptors.add(MyErrorInterceptor());
 
-    // 开发模式下禁用HTTPS证书校验
-    if (GlobalConfig.isDev) {
+    // 开发模式下
+    if (kDebugMode) {
+      // 禁用HTTPS证书校验
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
         client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
       };
+      // 添加日志拦截器
+      dio.interceptors.add(MyLogInterceptor());
     }
   }
 
