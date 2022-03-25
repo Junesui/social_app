@@ -5,13 +5,11 @@ import 'package:socialapp/net/http/http_request.dart';
 class HttpUtil {
   /// 初始化
   static void init({
-    required String baseUrl,
-    int connectTimeout = 10000,
-    int receiveTimeout = 10000,
+    int connectTimeout = 10 * 1000,
+    int receiveTimeout = 10 * 1000,
     Map<String, String>? headers,
   }) {
     HttpRequest().init(
-      baseUrl: baseUrl,
       connectTimeout: connectTimeout,
       receiveTimeout: receiveTimeout,
       headers: headers,

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:socialapp/config/global_config.dart';
 import 'package:socialapp/constant/common/sk_constant.dart';
 import 'package:socialapp/net/http/http_util.dart';
 import 'package:socialapp/router/router.dart';
@@ -38,12 +37,11 @@ _init() async {
   // 开发模式下为了方便调试设置超时时间
   if (kDebugMode) {
     HttpUtil.init(
-      baseUrl: GlobalConfig.httpBaseUrl,
-      connectTimeout: 10000000,
-      receiveTimeout: 10000000,
+      connectTimeout: 10 * 10000,
+      receiveTimeout: 10 * 10000,
     );
   } else {
-    HttpUtil.init(baseUrl: GlobalConfig.httpBaseUrl);
+    HttpUtil.init();
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/constant/home_constant.dart';
+import 'package:socialapp/page/home/home_tab_view.dart';
 import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/screen_util.dart';
 import 'package:socialapp/util/toast_util.dart';
@@ -101,13 +102,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              // children: HomeConstant.tabBarTypes.map((type) {
-              //   return HomeTabView(type: type);
-              // }).toList(),
-              children: [
-                MyText(text: "xxx"),
-                MyText(text: "xxx"),
-              ],
+              children: HomeConstant.tabBarTypes.map<Widget>((type) {
+                return HomeTabView(type: type);
+              }).toList(),
             ),
           ),
         ],
@@ -127,8 +124,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           height: 30,
           child: Tab(
             child: MyText(
-              text: type == HomeConstant.followType ? "关注" : "大厅",
-              color: Colors.grey,
+              text: type == HomeConstant.followType ? "关注" : "公开",
               fontSize: 50,
             ),
           ),

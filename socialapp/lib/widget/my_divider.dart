@@ -6,6 +6,8 @@ class MyDivider extends StatelessWidget {
   final Color? color;
   // 高度
   final double? height;
+  // 厚度
+  final double? thickness;
   // 左边缩进
   final double indent;
   // 右边缩进
@@ -17,6 +19,7 @@ class MyDivider extends StatelessWidget {
     this.height = 0.1,
     this.indent = 0,
     this.endIndent = 0,
+    this.thickness,
   }) : super(key: key);
 
   @override
@@ -26,6 +29,7 @@ class MyDivider extends StatelessWidget {
       height: height,
       indent: indent,
       endIndent: endIndent,
+      thickness: thickness,
     );
   }
 }

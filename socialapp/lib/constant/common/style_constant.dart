@@ -9,5 +9,5 @@ class StyleConstant {
   static const double mainLRPadding = 40;
 
   // 内容距离状态栏的距离
-  static const double fromStateBar = 5;
+  static const double fromStateBar = 10;
 }

@@ -39,14 +39,12 @@ class HttpRequest {
 
   /// 初始化
   void init({
-    String? baseUrl,
-    int connectTimeout = 10000,
-    int receiveTimeout = 10000,
+    int connectTimeout = 10 * 1000,
+    int receiveTimeout = 10 * 1000,
     Map<String, String>? headers,
   }) {
     HttpRequest._instance;
     dio.options = dio.options.copyWith(
-      baseUrl: baseUrl,
       connectTimeout: connectTimeout,
       receiveTimeout: receiveTimeout,
     );
