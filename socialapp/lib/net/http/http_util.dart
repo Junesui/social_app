@@ -53,4 +53,19 @@ class HttpUtil {
       return ApiResponse.error(e.error);
     }
   }
+
+  /// post 请求附带文件上传
+  static Future postWithFiles(String path, Map<String, Object> data,
+      {CancelToken? cancelToken}) async {
+    try {
+      dynamic respData = await HttpRequest().postWithFiles(
+        path,
+        data,
+        cancelToken: cancelToken,
+      );
+      return ApiResponse.ok(respData);
+    } on DioError catch (e) {
+      return ApiResponse.error(e.error);
+    }
+  }
 }

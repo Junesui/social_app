@@ -5,7 +5,7 @@ import 'package:socialapp/net/http/http_util.dart';
 class UserDao {
   // 登录
   static Future login(String username, String password, int loginType) async {
-    return await HttpUtil.post(Api.userLogin, {
+    return await HttpUtil.post(Api.login, {
       "username": username,
       "password": password,
       "loginType": loginType,

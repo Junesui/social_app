@@ -12,7 +12,7 @@ class MyMaskLayer extends StatelessWidget {
   // 子组件
   final Widget child;
 
-  const MyMaskLayer({Key? key, required this.child, required this.isShow, required this.hintText})
+  const MyMaskLayer({Key? key, required this.child, required this.isShow, this.hintText})
       : super(key: key);
 
   // 带遮罩层

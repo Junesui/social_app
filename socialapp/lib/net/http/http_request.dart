@@ -85,4 +85,15 @@ class HttpRequest {
     );
     return response.data;
   }
+
+  /// post 请求附带文件上传
+  Future postWithFiles(String path, Map<String, Object> data, {CancelToken? cancelToken}) async {
+    Response response = await dio.post(
+      path,
+      data: FormData.fromMap(data),
+      cancelToken: cancelToken ?? _cancelToken,
+      options: Options(headers: {"content-type": "multipart/form-data"}),
+    );
+    return response.data;
+  }
 }

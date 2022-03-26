@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
 import 'package:socialapp/constant/post_constant.dart';
+import 'package:socialapp/net/dao/post_dao.dart';
+import 'package:socialapp/net/http/api_response.dart';
 import 'package:socialapp/page/post/post_img_cell.dart';
 import 'package:socialapp/util/bottom_sheet_util.dart';
 import 'package:socialapp/util/perm_util.dart';
 import 'package:socialapp/util/pick_util.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_appbar.dart';
 import 'package:socialapp/widget/my_btn.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
 import 'package:socialapp/widget/my_input.dart';
+import 'package:socialapp/widget/my_mask_layer.dart';
 import 'package:socialapp/widget/my_text.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -30,6 +32,8 @@ class _PostPageState extends State<PostPage> {
   List<AssetEntity> _pickImgs = [];
   // 发布内容的类型。默认文本类型
   int _postType = PostConstant.textType;
+  // 是否显示遮罩层
+  bool _isShowMask = false;
 
   /// 销毁方法
   @override
@@ -84,19 +88,34 @@ class _PostPageState extends State<PostPage> {
     if (_postType == PostConstant.textType) {
       if (_pickImgs.isNotEmpty) {
         _postType = PostConstant.imageType;
-      } else {
-        _postType = PostConstant.textType;
       }
     }
-    ToastUtil.show(msg: "TODO");
+    // 显示遮罩层
+    setState(() {
+      _isShowMask = true;
+    });
+    // 发送请求
+    ApiResponse response = await PostDao.post(
+      _postType,
+      _textController.text,
+      _pickImgs,
+    );
+    ApiResponse.goon(response, (v) {});
+    // 隐藏遮罩层
+    setState(() {
+      _isShowMask = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: MyAppBar(mTitle: "发布"),
-      body: _buildBody(),
+    return MyMaskLayer(
+      isShow: _isShowMask,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: MyAppBar(mTitle: "发布"),
+        body: _buildBody(),
+      ),
     );
   }
 
