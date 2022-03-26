@@ -19,6 +19,9 @@ import com.z.util.JwtUtil;
 import com.z.util.RedisUtil;
 import com.z.vo.LoginVo;
 
+/**
+ * 用户控制器
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -33,7 +36,7 @@ public class UserController {
     /**
      * 登录
      * 
-     * @param loginVo 登录数据
+     * @param loginVo 登录数据对象
      * @return
      */
     @PostMapping("/login")
