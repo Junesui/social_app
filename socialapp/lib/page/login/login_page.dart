@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     // 发送验证码
     ApiResponse response = await CommonDao.sendPhoneCode(phone, PhoneCodeConstant.codeTypeLogin);
-    ApiResponse.goon(response, (data) {
+    ApiResponse.goon(context, response, (data) {
       setState(() {
         _isShowCodeInput = true;
         _isSendCode = true;
@@ -119,10 +119,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     // 发送登录请求
     ApiResponse response = await UserDao.login(username, password, loginType);
-    ApiResponse.goon(response, (token) async {
-      setState(() {
-        _isShowMask = false;
-      });
+    ApiResponse.goon(context, response, (token) async {
       // 保存token，跳转到首页
       await SpUtil.setString(SKConstant.loginToken, token);
       Navigator.of(context).pushNamed(RouterName.root);
@@ -212,6 +209,7 @@ class _LoginPageState extends State<LoginPage> {
             fontSize: 46,
             controller: _passwordController,
             isObscure: true,
+            maxLines: 1,
           ),
           SizedBox(height: SU.setHeight(80)),
           // 登录按钮

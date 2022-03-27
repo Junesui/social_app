@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:socialapp/constant/common/response_code_constant.dart';
 import 'package:socialapp/net/http/http_exception.dart';
+import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/toast_util.dart';
 
 /// 接口调用完成之后的共通返回类
@@ -23,13 +26,18 @@ class ApiResponse {
   ApiResponse.error(this.exception) : httpOK = false;
 
   /// 请求完成后的继续处理
-  static goon(ApiResponse response, Function(dynamic) cb) {
+  static goon(BuildContext context, ApiResponse response, Function(dynamic) cb) {
     // 如果http请求成功并且返回的数据是正常成功状态，则继续执行
     if (response.httpOK && response.dataOK) {
       cb(response.data!["data"]);
     }
     // 如果http请求成功，但是返回数据不是成功状态，提示消息
     if (response.httpOK && !response.dataOK) {
+      // 如果返回未登录状态码，则跳转到登录页面
+      if (response.data!["code"] == RespCodeConstant.notLogin) {
+        Navigator.of(context).pushNamed(RouterName.login);
+        return;
+      }
       ToastUtil.show(msg: response.dataMsg);
       return;
     }

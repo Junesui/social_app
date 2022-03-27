@@ -12,7 +12,7 @@ class Api {
   // 登录
   static const login = "$baseUrl/user/login";
 
-  /// 发布相关
-  // 发布
+  /// 投稿相关
+  // 投稿
   static const post = "$baseUrl/post/post";
 }

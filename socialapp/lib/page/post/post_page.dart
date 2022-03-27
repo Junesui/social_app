@@ -9,6 +9,7 @@ import 'package:socialapp/util/bottom_sheet_util.dart';
 import 'package:socialapp/util/perm_util.dart';
 import 'package:socialapp/util/pick_util.dart';
 import 'package:socialapp/util/screen_util.dart';
+import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_appbar.dart';
 import 'package:socialapp/widget/my_btn.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
@@ -100,7 +101,9 @@ class _PostPageState extends State<PostPage> {
       _textController.text,
       _pickImgs,
     );
-    ApiResponse.goon(response, (v) {});
+    ApiResponse.goon(context, response, (v) {
+      ToastUtil.show(msg: "投稿タイプによってページに遷移する");
+    });
     // 隐藏遮罩层
     setState(() {
       _isShowMask = false;
@@ -283,7 +286,14 @@ class _PostPageState extends State<PostPage> {
         // 发送按钮
         MyBtn(
           onPressed: () {
-            _post();
+            // 判断是否可以发布
+            bool _isCanPost = _textController.text.isNotEmpty ||
+                _pickImgs.isNotEmpty ||
+                _postType == PostConstant.callType ||
+                _postType == PostConstant.videoType;
+            if (_isCanPost) {
+              _post();
+            }
           },
           child: const MyText(
             text: "发布",

@@ -35,6 +35,7 @@ class MyMaskLayer extends StatelessWidget {
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // 动画
                   Expanded(child: Lottie.asset(AssetConstant.loadingAnimation)),
