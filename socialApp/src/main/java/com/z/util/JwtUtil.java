@@ -52,14 +52,15 @@ public class JwtUtil {
     }
 
     /**
-     * 获取生成 token 时候的签发对象(用户登录ID)
+     * 获取生成 token 时候的载荷（用户登录对象）
      * 
      * @param token
-     * @return 签发对象
+     * @return
      */
-    public static String getUserAuthId(String token) {
-        String userAuthId = JWT.decode(token).getAudience().get(0);
-        return userAuthId;
+    public static UserAuth getUserAuth(String token) {
+        String userAuthStr = JWT.decode(token).getClaim("userAuth").asString();
+        UserAuth userAuth = JSONObject.parseObject(userAuthStr, UserAuth.class);
+        return userAuth;
     }
 
 }

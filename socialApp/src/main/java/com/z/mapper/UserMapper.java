@@ -16,7 +16,7 @@ public interface UserMapper {
     UserAuth findByUsername(@Param("username") String username, @Param("type") Integer type);
 
     // 保存用户信息表
-    Long saveUser(User user);
+    void saveUser(User user);
 
     // 保存用户登录表
     void saveUserAuth(UserAuth userAuth);

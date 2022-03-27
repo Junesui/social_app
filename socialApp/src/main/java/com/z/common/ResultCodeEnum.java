@@ -10,7 +10,7 @@ import lombok.Getter;
  * 错误码列表： 
  * 10: 通用， 
  * 11: 用户，
- * 12: ...
+ * 12: 投稿
  */
 @Getter
 public enum ResultCodeEnum {
@@ -25,7 +25,8 @@ public enum ResultCodeEnum {
     // 用户
     NOT_LOGIN(11000,"未登录"),
     
-    
+    // 投稿
+    POST_ERROR(12000,"发布失败"),
     ;
 
     // 状态码

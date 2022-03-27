@@ -9,13 +9,13 @@
 
 	<!-- 保存用户信息表 -->
 	<insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO t_user(userid,telephone,is_new_user,created_at,updated_at)
-		VALUES (#{userid},#{telephone},#{isNewUser},#{createdAt},#{updatedAt})
+		INSERT INTO t_user (uid,telephone,is_new_user,created_at,updated_at)
+		VALUES (#{uid},#{telephone},#{isNewUser},#{createdAt},#{updatedAt})
 	</insert>
 
 	<!-- 保存用户登录表 -->
 	<insert id="saveUserAuth">
-        INSERT INTO t_user_auth(user_id,type,username,created_at,updated_at)
+        INSERT INTO t_user_auth (user_id,type,username,created_at,updated_at)
         VALUES (#{userId},#{type},#{username},#{createdAt},#{updatedAt})
 	</insert>
 

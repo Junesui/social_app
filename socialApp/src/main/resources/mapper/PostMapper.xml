@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.z.mapper.PostMapper">
+
+	<!-- 保存投稿表 -->
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_post (user_id,content,type,created_at,updated_at)
+		VALUES (#{userId},#{content},#{type},#{createdAt},#{updatedAt})
+	</insert>
+
+    <!-- 保存投稿图片表 -->
+    <insert id="savePostImgs">
+        INSERT INTO t_post_img (post_id,img,img_thumbnail,created_at,updated_at) VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.postId},#{item.img},#{item.imgThumbnail},#{item.createdAt},#{item.updatedAt})
+        </foreach>
+    </insert>
+    
+    <!-- 保存通话房间表 -->
+    <insert id="saveCallRoom" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_call_room (ower_id,type,is_calling,start_at,created_at,updated_at)
+        VALUES (#{owerId},#{type},#{isCalling},#{startAt},#{createdAt},#{updatedAt})
+    </insert>
+
+    <!-- 保存通话房间-用户关联表 -->
+    <insert id="saveCallUser">
+        INSERT INTO t_call_user(call_room_id,user_id,is_owner,join_at,created_at,updated_at)
+        VALUES (#{callRoomId},#{userId},#{isOwner},#{joinAt},#{createdAt},#{updatedAt})
+    </insert>
+    
+
+
+</mapper>
+
+

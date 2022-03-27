@@ -8,11 +8,11 @@ import lombok.Data;
  * 通话房间-用户关联表
  */
 @Data
-public class CallingUser implements Serializable {
+public class CallUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Long callingRoomId;
+    private Long callRoomId;
     private Long userId;
     private Boolean isOwner;
     private Long joinAt;

@@ -1,11 +1,14 @@
 package com.z.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.z.common.R;
+import com.z.common.ResultCodeEnum;
 import com.z.service.PostService;
 import com.z.vo.PostVo;
 
@@ -27,7 +30,12 @@ public class PostController {
      */
     @PostMapping("/post")
     public R post(PostVo postVo) {
-        postService.post(postVo);
+        try {
+            postService.post(postVo);
+        } catch (IOException e) {
+            return R.error(ResultCodeEnum.POST_ERROR);
+        }
         return R.success();
     }
+
 }

@@ -51,21 +51,24 @@ public class MyFileUtil {
     }
 
     /**
-     * 获取保存文件的全路径
+     * 生成保存文件的全路径 [saveBaseDir/type/userId/year/month/day/filename]
      * 
      * @param saveBaseDir 保存的共同基本路径[从配置文件获取]
-     * @param typePath    保存的类型[常量文件中获取]
+     * @param type        保存的类型[常量文件中获取]
      * @param userId      当前登录的用户信息ID
      * @return 文件全路径
      */
-    public static String getFullFilePath(String saveBaseDir, String typePath, Long userId) {
+    public static String getFullFilePath(String saveBaseDir, String type, Long userId) {
         int year = DateUtil.thisYear();
         int month = DateUtil.thisMonth() + 1;
         int day = DateUtil.thisDayOfMonth();
-        String datePath = "" + year + month + day;
 
-        return saveBaseDir + "/" + typePath + "/" + userId + datePath + "/"
-                + UUID.randomUUID().toString().replace("-", "");
+        String path = new StringBuffer().append(saveBaseDir).append("/").append(type).append("/").append(userId)
+                .append("/").append(year).append("/").append(month).append("/").append(day).append("/")
+                .append(UUID.randomUUID().toString().replace("-", "")).toString();
+
+        return path;
     }
+    
 
 }

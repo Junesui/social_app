@@ -13,13 +13,13 @@ import com.z.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-    
+
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public UserAuth findByUsername(String username, Integer type) {
-        return userMapper.findByUsername(username,type);
+        return userMapper.findByUsername(username, type);
     }
 
     @Transactional
@@ -27,13 +27,14 @@ public class UserServiceImpl implements UserService {
     public void saveByPhone(String username, Integer type) {
         // 保存用户信息表
         User user = new User();
-        user.setUserid(UUID.randomUUID().toString().replace("-", ""));
+        user.setUid(UUID.randomUUID().toString().replace("-", ""));
         user.setTelephone(username);
         user.setIsNewUser(true);
         user.setCreatedAt(System.currentTimeMillis());
         user.setUpdatedAt(System.currentTimeMillis());
-        Long userId = userMapper.saveUser(user);
-        
+        userMapper.saveUser(user);
+        Long userId = user.getId();
+
         // 保存用户登录表
         UserAuth userAuth = new UserAuth();
         userAuth.setUserId(userId);
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
         userAuth.setCreatedAt(System.currentTimeMillis());
         userAuth.setUpdatedAt(System.currentTimeMillis());
         userMapper.saveUserAuth(userAuth);
-        
+
     }
 
 }

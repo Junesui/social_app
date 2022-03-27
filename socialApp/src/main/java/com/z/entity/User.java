@@ -12,7 +12,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String userid;
+    private String uid;
     private String telephone;
     private String email;
     private String nickname;
