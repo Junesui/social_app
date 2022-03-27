@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2022-03-21 11:40:36                          */
+/* Created on:     2022-03-27 19:11:05                          */
 /*==============================================================*/
 
 
@@ -12,9 +12,9 @@ drop table if exists t_age_verify_img;
 
 drop table if exists t_banned_words;
 
-drop table if exists t_calling_room;
+drop table if exists t_call_room;
 
-drop table if exists t_calling_user;
+drop table if exists t_call_user;
 
 drop table if exists t_comment;
 
@@ -130,13 +130,12 @@ create table t_banned_words
 alter table t_banned_words comment '违禁词表';
 
 /*==============================================================*/
-/* Table: t_calling_room                                        */
+/* Table: t_call_room                                           */
 /*==============================================================*/
-create table t_calling_room
+create table t_call_room
 (
    id                   BIGINT unsigned not null auto_increment comment 'ID',
    ower_id              BIGINT unsigned not null comment '房主ID',
-   title                VARCHAR(255) comment '房间标题',
    type                 TINYINT unsigned not null comment '房间类型（0: "call", 1: "video"）',
    max_participants     INT unsigned default 8 comment '最大参与者',
    is_calling           BOOLEAN comment '是否正在进行中',
@@ -149,15 +148,15 @@ create table t_calling_room
    primary key (id)
 );
 
-alter table t_calling_room comment '通话房间表';
+alter table t_call_room comment '通话房间表';
 
 /*==============================================================*/
-/* Table: t_calling_user                                        */
+/* Table: t_call_user                                           */
 /*==============================================================*/
-create table t_calling_user
+create table t_call_user
 (
    id                   BIGINT unsigned not null auto_increment comment 'ID',
-   calling_room_id      BIGINT unsigned not null comment '房间ID',
+   call_room_id         BIGINT unsigned not null comment '房间ID',
    user_id              BIGINT unsigned not null comment '用户ID',
    is_owner             BOOLEAN comment '是否是房主',
    join_at              BIGINT unsigned not null comment '加入房间时间',
@@ -167,7 +166,7 @@ create table t_calling_user
    primary key (id)
 );
 
-alter table t_calling_user comment '通话房间-用户关联表';
+alter table t_call_user comment '通话房间-用户关联表';
 
 /*==============================================================*/
 /* Table: t_comment                                             */
@@ -502,7 +501,7 @@ alter table t_role_permission comment '角色-权限关联表';
 create table t_user
 (
    id                   BIGINT unsigned not null auto_increment comment 'ID',
-   userid               VARCHAR(64) not null comment '用户标识ID',
+   uid                  VARCHAR(64) not null comment '用户标识ID',
    telephone            VARCHAR(20) comment '手机号',
    email                VARCHAR(50) comment '邮箱',
    nickname             VARCHAR(255) comment '昵称',
@@ -525,7 +524,7 @@ create table t_user
    created_at           BIGINT unsigned not null comment '创建时间',
    updated_at           BIGINT unsigned not null comment '更新时间',
    primary key (id),
-   key AK_uq_userid (userid)
+   key AK_uq_userid (uid)
 );
 
 alter table t_user comment '用户表
