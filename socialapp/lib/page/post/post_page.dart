@@ -102,7 +102,11 @@ class _PostPageState extends State<PostPage> {
       _pickImgs,
     );
     ApiResponse.goon(context, response, (v) {
-      ToastUtil.show(msg: "投稿タイプによってページに遷移する");
+      if (_postType == PostConstant.callType || _postType == PostConstant.videoType) {
+        ToastUtil.show(msg: "跳转到通话房间页");
+      } else {
+        Navigator.of(context).pop();
+      }
     });
     // 隐藏遮罩层
     setState(() {
@@ -114,6 +118,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return MyMaskLayer(
       isShow: _isShowMask,
+      hintText: "发布中...",
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: MyAppBar(mTitle: "发布"),
@@ -287,7 +292,7 @@ class _PostPageState extends State<PostPage> {
         MyBtn(
           onPressed: () {
             // 判断是否可以发布
-            bool _isCanPost = _textController.text.isNotEmpty ||
+            bool _isCanPost = _textController.text.trim().isNotEmpty ||
                 _pickImgs.isNotEmpty ||
                 _postType == PostConstant.callType ||
                 _postType == PostConstant.videoType;

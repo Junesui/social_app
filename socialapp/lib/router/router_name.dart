@@ -13,6 +13,12 @@ class RouterName {
   static const post = "/post";
   // 发布时图片预览页
   static const postImgPreview = "/post_img_preview";
+  // 通话页面
+  static const calling = "/calling";
+  // 通话邀请列表页面
+  static const callingInvite = "/calling_invite";
+  // 通话设置页面
+  static const callingSettings = "/calling_settings";
 
   // 搜索页
   static const search = "/search";
@@ -20,12 +26,7 @@ class RouterName {
   static const qr = "/qr";
   // 通话中的列表页
   static const callTimeline = "/call_timeline";
-  // 通话页面
-  static const calling = "/calling";
-  // 通话邀请列表页面
-  static const callingInvite = "/calling_invite";
-  // 通话设置页面
-  static const callingSettings = "/calling_settings";
+
   // 游戏列表页
   static const game = "/game";
   // 用户信息页

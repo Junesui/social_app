@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:socialapp/page/calling/calling_page.dart';
 import 'package:socialapp/page/common/photo_view_page.dart';
 import 'package:socialapp/page/login/login_page.dart';
 import 'package:socialapp/page/post/post_img_preview_page.dart';
@@ -15,6 +16,7 @@ final Map<String, Function> routes = {
   RouterName.root: (context) => Tabs(),
   RouterName.post: (context) => PostPage(),
   RouterName.postImgPreview: (context, {arguments}) => PostImgPreviewPage(arguments: arguments),
+  RouterName.calling: (context) => CallingPage(),
 };
 
 //固定写法 [CupertinoPageRoute: ios风格的路由]

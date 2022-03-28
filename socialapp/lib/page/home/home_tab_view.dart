@@ -392,7 +392,12 @@ class _HomeTabViewState extends State<HomeTabView> with AutomaticKeepAliveClient
   /// 发布通话
   _buildPostCall() {
     List<BottomSheetParam> params = [];
-    params.add(BottomSheetParam(text: "语音聊天"));
+    params.add(BottomSheetParam(
+      text: "语音聊天",
+      onTap: () {
+        Navigator.of(context).pushNamed(RouterName.calling);
+      },
+    ));
     params.add(BottomSheetParam(text: "视频聊天"));
     BottomSheetUtil.show(context, params);
   }

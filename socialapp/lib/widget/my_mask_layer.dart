@@ -17,40 +17,42 @@ class MyMaskLayer extends StatelessWidget {
 
   // 带遮罩层
   get _buildWithMaskLayer {
-    return Stack(
-      children: [
-        // 子组件
-        child,
-        // 遮罩层
-        Container(
-          color: Colors.black12,
-          child: Center(
-            child: Container(
-              width: 72,
-              height: 72,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 动画
-                  Expanded(child: Lottie.asset(AssetConstant.loadingAnimation)),
-                  // 提示文字
-                  MyText(
-                    text: hintText ?? "",
-                    color: Colors.white,
-                    fontSize: 30,
-                  ),
-                ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          // 子组件
+          child,
+          // 遮罩层
+          Container(
+            color: Colors.black12,
+            child: Center(
+              child: Container(
+                width: 72,
+                height: 72,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 动画
+                    Expanded(child: Lottie.asset(AssetConstant.loadingAnimation)),
+                    // 提示文字
+                    MyText(
+                      text: hintText ?? "",
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
