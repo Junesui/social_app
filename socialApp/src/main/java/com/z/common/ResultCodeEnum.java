@@ -9,7 +9,7 @@ import lombok.Getter;
  * 
  * 错误码列表： 
  * 10: 通用， 
- * 11: 用户，
+ * 11: 用户， 
  * 12: 投稿
  */
 @Getter
@@ -17,18 +17,18 @@ public enum ResultCodeEnum {
 
     // 共通
     SUCCESS(10000, "成功"), 
-    UNKNOWN_ERROR(10001,"服务器异常"),
-    CODE_ERROR(10002,"验证码错误"),
+    UNKNOWN_ERROR(10001, "服务器异常"), 
+    CODE_ERROR(10002, "验证码错误"),
 
-    
-    
     // 用户
-    NOT_LOGIN(11000,"未登录"),
-    
-    // 投稿
-    POST_ERROR(12000,"发布失败"),
-    ;
+    NOT_LOGIN(11000, "未登录"),
 
+    // 投稿
+    POST_ERROR(12000, "发布失败"),;
+
+    
+    
+    
     // 状态码
     private Integer code;
     // 消息

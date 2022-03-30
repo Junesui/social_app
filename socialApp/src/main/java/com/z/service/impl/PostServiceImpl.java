@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.z.common.R;
 import com.z.constant.FileConstant;
 import com.z.constant.PostConstant;
 import com.z.entity.CallRoom;
@@ -33,7 +34,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void post(PostVo postVo) throws IOException {
+    public R post(PostVo postVo) throws IOException {
         Long userId = LoginInterceptor.threadLocal.get().getUserId();
         LoginInterceptor.threadLocal.remove();
 
@@ -101,7 +102,9 @@ public class PostServiceImpl implements PostService {
             callUser.setCreatedAt(System.currentTimeMillis());
             callUser.setUpdatedAt(System.currentTimeMillis());
             postMapper.saveCallUser(callUser);
+            return R.success().data(callRoom);
         }
+        return R.success();
 
     }
 

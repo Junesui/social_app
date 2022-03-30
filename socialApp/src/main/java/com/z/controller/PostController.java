@@ -31,11 +31,12 @@ public class PostController {
     @PostMapping("/post")
     public R post(PostVo postVo) {
         try {
-            postService.post(postVo);
+            R r = postService.post(postVo);
+            return r;
         } catch (IOException e) {
             return R.error(ResultCodeEnum.POST_ERROR);
         }
-        return R.success();
+
     }
 
 }

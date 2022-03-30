@@ -12,6 +12,8 @@ import lombok.Data;
 @Component
 @Data
 public class FileConfigProperties {
+    //访问路径前缀
     private String accessPrefix;
+    // 文件保存的基本路径
     private String savaBaseDir;
 }

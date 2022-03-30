@@ -17,7 +17,6 @@ public class TestController {
 
     @GetMapping("/test")
     public R test() {
-
         Long a = redisUtil.getExpire("phone_code_login18712345678", TimeUnit.MINUTES);
         return R.success().data(a);
     }

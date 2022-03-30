@@ -12,6 +12,8 @@ import lombok.Data;
 @Component
 @Data
 public class JWTConfigProperties {
+    // 登录token有效时间(天)
     private Integer loginKeepDays;
+    // 生成token时候的密钥
     private String tokenSecretKey;
 }
