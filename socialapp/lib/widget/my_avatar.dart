@@ -12,9 +12,16 @@ class MyAvatar extends StatelessWidget {
   final String? avatarUrl;
   // 头像半径
   final double radius;
+  // 显示房主图片
+  final bool isShowOwnerIcon;
 
-  const MyAvatar({Key? key, required this.userId, required this.avatarUrl, this.radius = 52})
-      : super(key: key);
+  const MyAvatar({
+    Key? key,
+    required this.userId,
+    required this.avatarUrl,
+    this.radius = 52,
+    this.isShowOwnerIcon = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +29,33 @@ class MyAvatar extends StatelessWidget {
       onTap: () {
         ToastUtil.show(msg: "TODO 跳转到用户信息页");
       },
+      child: Stack(
+        children: [
+          // 头像
+          CircleAvatar(
+            backgroundImage: MyCacheNetImg.provider(avatarUrl ?? ""),
+            backgroundColor: Colors.grey[200],
+            radius: SU.setHeight(radius),
+          ),
+          // 房主图标
+          isShowOwnerIcon ? _buildOwnerIcon() : const SizedBox(),
+        ],
+      ),
+    );
+  }
+
+  /// 房主图标
+  _buildOwnerIcon() {
+    return Positioned(
+      left: SU.setWidth(30),
       child: CircleAvatar(
-        backgroundImage: MyCacheNetImg.provider(avatarUrl ?? ""),
+        radius: SU.setHeight(22),
         backgroundColor: StyleConstant.primaryColor,
-        radius: SU.setHeight(radius),
+        child: Icon(
+          Icons.person,
+          color: Colors.white,
+          size: SU.setFontSize(28),
+        ),
       ),
     );
   }

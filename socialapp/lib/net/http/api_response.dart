@@ -30,6 +30,7 @@ class ApiResponse {
     // 如果http请求成功并且返回的数据是正常成功状态，则继续执行
     if (response.httpOK && response.dataOK) {
       cb(response.data!["data"]);
+      return;
     }
     // 如果http请求成功，但是返回数据不是成功状态，提示消息
     if (response.httpOK && !response.dataOK) {

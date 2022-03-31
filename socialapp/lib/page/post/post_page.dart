@@ -5,11 +5,11 @@ import 'package:socialapp/constant/post_constant.dart';
 import 'package:socialapp/net/dao/post_dao.dart';
 import 'package:socialapp/net/http/api_response.dart';
 import 'package:socialapp/page/post/post_img_cell.dart';
+import 'package:socialapp/router/router_name.dart';
 import 'package:socialapp/util/bottom_sheet_util.dart';
 import 'package:socialapp/util/perm_util.dart';
 import 'package:socialapp/util/pick_util.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/util/toast_util.dart';
 import 'package:socialapp/widget/my_appbar.dart';
 import 'package:socialapp/widget/my_btn.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
@@ -103,7 +103,7 @@ class _PostPageState extends State<PostPage> {
     );
     ApiResponse.goon(context, response, (v) {
       if (_postType == PostConstant.callType || _postType == PostConstant.videoType) {
-        ToastUtil.show(msg: "跳转到通话房间页");
+        Navigator.of(context).pushReplacementNamed(RouterName.calling, arguments: v);
       } else {
         Navigator.of(context).pop();
       }
@@ -120,7 +120,6 @@ class _PostPageState extends State<PostPage> {
       isShow: _isShowMask,
       hintText: "发布中...",
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: MyAppBar(mTitle: "发布"),
         body: _buildBody(),
       ),

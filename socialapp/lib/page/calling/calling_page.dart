@@ -4,23 +4,32 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:socialapp/constant/common/asset_constant.dart';
 import 'package:socialapp/constant/common/style_constant.dart';
+import 'package:socialapp/model/calling/calling_room_info_model.dart';
 import 'package:socialapp/router/router_name.dart';
+import 'package:socialapp/third/Zego.dart';
 import 'package:socialapp/util/screen_util.dart';
-import 'package:socialapp/widget/my_cache_net_img.dart';
+import 'package:socialapp/widget/my_avatar.dart';
 import 'package:socialapp/widget/my_countup.dart';
 import 'package:socialapp/widget/my_icon_btn.dart';
 import 'package:socialapp/widget/my_text.dart';
+import 'package:zego_express_engine/zego_express_engine.dart';
+
+// 分隔符
+String _split = "#_#";
 
 /// 通话页面
 class CallingPage extends StatefulWidget {
-  const CallingPage({Key? key}) : super(key: key);
+  // CallingRoomInfoModal
+  final Map arguments;
+
+  const CallingPage({Key? key, required this.arguments}) : super(key: key);
 
   @override
   _CallingPageState createState() => _CallingPageState();
 }
 
 class _CallingPageState extends State<CallingPage> {
-  // 输入框焦点标识
+  // 输入框焦点节点
   final FocusNode _inputFocusNode = FocusNode();
   //输入框控制器
   final TextEditingController _editingController = TextEditingController();
@@ -28,36 +37,65 @@ class _CallingPageState extends State<CallingPage> {
   bool _isCopy = true;
   // 房主等待用户加入状态
   bool _isOwnerWaiting = true;
-  // 是否展示表情
+  // 是否隐藏表情
   bool _isHideEmoji = true;
 
-  // test avatar
-  String testAvatarUrl =
-      "https://images.pexels.com/photos/4386364/pexels-photo-4386364.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260";
+  // 房间用户【用户ID${_split}用户头像${_split}用户昵称】
+  List<String> _loginUserIds = [];
 
   @override
   void initState() {
     super.initState();
-    // 监听焦点变化
-    _inputFocusNode.addListener(() {
-      if (_inputFocusNode.hasFocus) {
-        setState(() {
-          _isCopy = false;
-        });
-      }
-    });
+    // 初始化Zego
+    _initZego();
   }
 
   @override
   void dispose() {
     _inputFocusNode.dispose();
     _editingController.dispose();
+    // 暂时销毁，实际点击退出才销毁
+    Zego.destroyEngine();
     super.dispose();
+  }
+
+  /// 初始化Zego
+  _initZego() {
+    CallingRoomInfoModel model = CallingRoomInfoModel.fromJson(widget.arguments);
+    int _appId = model.appId ?? 0;
+    String _roomId = model.roomId.toString();
+    String _userId = model.userId.toString();
+    String _token = model.token ?? "";
+    String _ownerAvatar = model.avatarThum ?? "";
+    String _ownerNickname = model.nickname ?? "";
+    String _loginUserId = _userId + _split + _ownerAvatar + _split + _ownerNickname;
+    _loginUserIds.add(_loginUserId);
+
+    // 创建引擎，登陆房间
+    Zego.createEngine(_appId);
+    ZegoRoomConfig config = ZegoRoomConfig.defaultConfig();
+    config.isUserStatusNotify = true;
+    config.token = _token;
+    // Zego.loginRoom(userId, roomId, config);
+    Zego.loginRoom(_loginUserId, "46", config);
+
+    // 监听用户状态更新
+    ZegoExpressEngine.onRoomUserUpdate = (
+      String roomID,
+      ZegoUpdateType updateType,
+      List<ZegoUser> userList,
+    ) {
+      setState(() {
+        _isOwnerWaiting = false;
+      });
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xff212121),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(SU.setWidth(StyleConstant.mainLRPadding)),
@@ -103,7 +141,7 @@ class _CallingPageState extends State<CallingPage> {
           ],
         ),
         const Spacer(),
-        // 招待ボタン
+        // 邀请按钮
         GestureDetector(
           onTap: () {
             Navigator.of(context).pushNamed(RouterName.callingInvite);
@@ -120,7 +158,7 @@ class _CallingPageState extends State<CallingPage> {
                 ),
                 const SizedBox(width: 3),
                 const MyText(
-                  text: "招待",
+                  text: "邀请",
                   fontSize: 35,
                   color: Colors.white70,
                 ),
@@ -161,11 +199,11 @@ class _CallingPageState extends State<CallingPage> {
       minLines: 1,
       style: TextStyle(
         color: Colors.white,
-        fontSize: SU.setFontSize(40),
+        fontSize: SU.setFontSize(36),
       ),
       focusNode: _inputFocusNode,
       decoration: InputDecoration(
-        hintText: "ゲームのIDやパスワードを共有",
+        hintText: "分享游戏ID或游戏房间密码等...",
         hintStyle: TextStyle(
           color: Colors.grey,
           fontSize: SU.setFontSize(36),
@@ -212,6 +250,7 @@ class _CallingPageState extends State<CallingPage> {
 
   /// 中间部分：房主等待状态的头像
   _buildOwnerWaitingAvatar() {
+    String _ownerAvatar = _loginUserIds[0].split(_split)[1];
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -219,28 +258,17 @@ class _CallingPageState extends State<CallingPage> {
         SizedBox(
           height: SU.setHeight(300),
           width: SU.setHeight(300),
-          child: Stack(
-            children: [
-              // 头像
-              CircleAvatar(
-                radius: SU.setHeight(150),
-                backgroundColor: Colors.transparent,
-                backgroundImage: MyCacheNetImg.provider(testAvatarUrl),
-              ),
-              // 房主图标
-              Positioned(
-                left: SU.setWidth(20),
-                child: CircleAvatar(
-                  radius: SU.setHeight(32),
-                  backgroundColor: StyleConstant.primaryColor,
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: SU.setFontSize(46),
-                  ),
+          child: Center(
+            child: Stack(
+              children: [
+                // 头像
+                MyAvatar(
+                  userId: 1,
+                  avatarUrl: _ownerAvatar,
+                  radius: 130,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -252,27 +280,33 @@ class _CallingPageState extends State<CallingPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          childAspectRatio: 4 / 5,
+        ),
         physics: const BouncingScrollPhysics(),
-        itemCount: 17,
+        itemCount: _loginUserIds.length,
         itemBuilder: (context, index) {
-          return Center(
-            child: Column(
-              children: [
-                // 头像
-                CircleAvatar(
-                  radius: SU.setHeight(100),
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: MyCacheNetImg.provider(testAvatarUrl),
-                ),
-                const SizedBox(height: 8),
-                // 昵称
-                MyText(
-                  text: "名前$index",
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 头像
+              MyAvatar(
+                userId: 1,
+                avatarUrl: _loginUserIds[index].split(_split)[1],
+                radius: 90,
+              ),
+              const SizedBox(height: 5),
+              // 昵称
+              Center(
+                child: MyText(
+                  text: "昵称$index",
                   fontSize: 36,
+                  color: Colors.white,
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
@@ -285,7 +319,11 @@ class _CallingPageState extends State<CallingPage> {
       alignment: Alignment.center,
       children: [
         // 文字
-        const MyText(text: "他の参加者を待っています...", fontSize: 50),
+        const MyText(
+          text: "等待其他参与者加入...",
+          fontSize: 50,
+          color: Colors.white,
+        ),
         // 表情
         Offstage(
           offstage: _isHideEmoji,
@@ -321,9 +359,9 @@ class _CallingPageState extends State<CallingPage> {
   }
 
   /// 小按钮子项
-  _buildSmallPlayIconItem(IconData icon, VoidCallback ontap) {
+  _buildSmallPlayIconItem(IconData icon, VoidCallback onTap) {
     return GestureDetector(
-      onTap: ontap,
+      onTap: onTap,
       child: Chip(
         backgroundColor: Colors.grey[800],
         shape: const CircleBorder(),
@@ -350,9 +388,9 @@ class _CallingPageState extends State<CallingPage> {
         children: [
           _buildBigFuncionIconItem(Icons.music_note, Colors.white70, "BGM", true, () {}),
           _buildVerticalDiveder(),
-          _buildBigFuncionIconItem(Icons.volume_up, Colors.white70, "スピーカー", true, () {}),
+          _buildBigFuncionIconItem(Icons.volume_up, Colors.white70, "扬声器", true, () {}),
           _buildVerticalDiveder(),
-          _buildBigFuncionIconItem(Icons.mic, Colors.white70, "マイク", true, () {}),
+          _buildBigFuncionIconItem(Icons.mic, Colors.white70, "麦克风", true, () {}),
           _buildVerticalDiveder(),
           _buildBigFuncionIconItem(Icons.logout, Colors.red, "退出", false, () {
             Navigator.of(context).pop();
@@ -364,13 +402,18 @@ class _CallingPageState extends State<CallingPage> {
 
   /// 最底部四个大按钮子项
   _buildBigFuncionIconItem(
-      IconData icon, Color color, String text, bool isHasRightLine, VoidCallback ontap) {
+    IconData icon,
+    Color color,
+    String text,
+    bool isHasRightLine,
+    VoidCallback onTap,
+  ) {
     return Row(
       children: [
         Column(
           children: [
             MyIconBtn(
-              onTap: ontap,
+              onTap: onTap,
               icon: icon,
               size: 70,
               color: color,

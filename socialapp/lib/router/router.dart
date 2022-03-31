@@ -16,7 +16,7 @@ final Map<String, Function> routes = {
   RouterName.root: (context) => Tabs(),
   RouterName.post: (context) => PostPage(),
   RouterName.postImgPreview: (context, {arguments}) => PostImgPreviewPage(arguments: arguments),
-  RouterName.calling: (context) => CallingPage(),
+  RouterName.calling: (context, {arguments}) => CallingPage(arguments: arguments),
 };
 
 //固定写法 [CupertinoPageRoute: ios风格的路由]

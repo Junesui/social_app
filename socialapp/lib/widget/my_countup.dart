@@ -6,14 +6,14 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 class MyCountup extends StatefulWidget {
   final double fontSize;
 
-  const MyCountup({Key? key, this.fontSize = 45}) : super(key: key);
+  const MyCountup({Key? key, this.fontSize = 36}) : super(key: key);
 
   @override
   _MyCountupState createState() => _MyCountupState();
 }
 
 class _MyCountupState extends State<MyCountup> {
-  static final StopWatchTimer _stopWatchTimer = StopWatchTimer();
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   // 初始化方法
   @override
@@ -22,11 +22,11 @@ class _MyCountupState extends State<MyCountup> {
     _stopWatchTimer.onExecute.add(StopWatchExecute.start);
   }
 
-  // 销毁方法
+  // 从渲染树中移除时调用的方法
   @override
-  void dispose() {
-    _stopWatchTimer.dispose();
-    super.dispose();
+  void deactivate() async {
+    await _stopWatchTimer.dispose();
+    super.deactivate();
   }
 
   @override
@@ -43,6 +43,7 @@ class _MyCountupState extends State<MyCountup> {
         return MyText(
           text: displayTime,
           fontSize: widget.fontSize,
+          color: Colors.grey,
         );
       },
     );

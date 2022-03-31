@@ -1,5 +1,7 @@
 /// 资源路径常量
 class AssetConstant {
+  // 默认头像
+  static const String defaultAvatar = "assets/images/default_avatar.jpg";
   // 头像占位符图片
   static const String avatarPlaceholder = "assets/images/avatar_placeholder.jpg";
   // 欢迎页背景图片

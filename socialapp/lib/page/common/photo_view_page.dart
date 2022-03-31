@@ -7,9 +7,9 @@ import 'package:socialapp/widget/my_cache_net_img.dart';
 class PhotoViewPage extends StatefulWidget {
   final Map arguments;
   // arguments 说明:
-  // 图片URL列表 - List<String> imgUrls;
-  // 被点击图片在图片URL列表中的index - int index;
-  // 是否隐藏关闭按钮 - bool isHiddenCloseBtn;[默认 true]
+  // List<String> imgUrls - 图片URL列表;
+  // int index - 被点击图片在图片URL列表中的index;
+  // bool isHiddenCloseBtn - 是否隐藏关闭按钮[默认 true];
 
   const PhotoViewPage({Key? key, required this.arguments}) : super(key: key);
 

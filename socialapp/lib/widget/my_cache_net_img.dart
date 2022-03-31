@@ -36,7 +36,7 @@ class MyCacheNetImg extends StatelessWidget {
     if (imgUrl.isNotEmpty) {
       return CachedNetworkImageProvider(imgUrl);
     } else {
-      return const AssetImage(AssetConstant.avatarPlaceholder);
+      return const AssetImage(AssetConstant.defaultAvatar);
     }
   }
 }
