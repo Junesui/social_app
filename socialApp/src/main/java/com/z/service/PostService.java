@@ -3,7 +3,7 @@ package com.z.service;
 import java.io.IOException;
 
 import com.z.common.R;
-import com.z.vo.PostVo;
+import com.z.dto.PostDTO;
 
 /**
  * 投稿接口
@@ -11,6 +11,6 @@ import com.z.vo.PostVo;
 public interface PostService {
 
     // 投稿
-    public R post(PostVo postVo) throws IOException;
+    public R post(PostDTO postVo) throws IOException;
     
 }

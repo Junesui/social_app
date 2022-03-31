@@ -13,16 +13,21 @@ import org.springframework.web.multipart.MultipartFile;
 import com.z.common.R;
 import com.z.constant.FileConstant;
 import com.z.constant.PostConstant;
+import com.z.dto.PostDTO;
+import com.z.dto.RoomInfoDTO;
 import com.z.entity.CallRoom;
 import com.z.entity.CallUser;
 import com.z.entity.Post;
 import com.z.entity.PostImg;
+import com.z.entity.User;
 import com.z.interceptor.LoginInterceptor;
 import com.z.mapper.PostMapper;
+import com.z.mapper.UserMapper;
 import com.z.properties.FileConfigProperties;
+import com.z.properties.ZegoConfigProperties;
 import com.z.service.PostService;
 import com.z.util.MyFileUtil;
-import com.z.vo.PostVo;
+import com.z.util.zego.ZegoUtil;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -30,11 +35,15 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostMapper postMapper;
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private FileConfigProperties fileProperties;
+    @Autowired
+    private ZegoConfigProperties zegoProperties;
 
     @Transactional
     @Override
-    public R post(PostVo postVo) throws IOException {
+    public R post(PostDTO postVo) throws IOException {
         Long userId = LoginInterceptor.threadLocal.get().getUserId();
         LoginInterceptor.threadLocal.remove();
 
@@ -102,7 +111,19 @@ public class PostServiceImpl implements PostService {
             callUser.setCreatedAt(System.currentTimeMillis());
             callUser.setUpdatedAt(System.currentTimeMillis());
             postMapper.saveCallUser(callUser);
-            return R.success().data(callRoom);
+
+            // 返回登录通话房间需要的数据
+            User user = userMapper.findById(userId);
+            String token = ZegoUtil.gengrateToken(zegoProperties.getAppId(), zegoProperties.getSecretKey(),
+                    zegoProperties.getEffectiveTimeInSeconds(), zegoProperties.getVerbose(), userId.toString());
+            RoomInfoDTO roomDTO = new RoomInfoDTO();
+            roomDTO.setAppId(zegoProperties.getAppId());
+            roomDTO.setRoomId(callRoomid);
+            roomDTO.setUserId(userId);
+            roomDTO.setToken(token);
+            roomDTO.setAvatarThum(user.getAvatarThumbnail());
+            roomDTO.setNickname(user.getNickname());
+            return R.success().data(roomDTO);
         }
         return R.success();
 

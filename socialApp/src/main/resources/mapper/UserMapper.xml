@@ -2,16 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.z.mapper.UserMapper">
 
+    <!-- 保存用户信息表 -->
+    <insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user (uid,telephone,is_new_user,created_at,updated_at)
+        VALUES (#{uid},#{telephone},#{isNewUser},#{createdAt},#{updatedAt})
+    </insert>
+    
+    <!-- 通过id查询用户信息 -->
+    <select id="findById" resultType="com.z.entity.User">
+        SELECT id,nickname,avatar_thumbnail FROM t_user WHERE id = #{id}
+    </select>
+    
 	<!-- 通过用户名和登录类型查找用户 -->
 	<select id="findByUsername" resultType="com.z.entity.UserAuth">
 		SELECT * FROM t_user_auth WHERE username = #{username} AND type = #{type} AND is_deleted IS NOT TRUE
 	</select>
-
-	<!-- 保存用户信息表 -->
-	<insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO t_user (uid,telephone,is_new_user,created_at,updated_at)
-		VALUES (#{uid},#{telephone},#{isNewUser},#{createdAt},#{updatedAt})
-	</insert>
 
 	<!-- 保存用户登录表 -->
 	<insert id="saveUserAuth">

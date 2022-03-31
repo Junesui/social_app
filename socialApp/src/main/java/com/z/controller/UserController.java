@@ -12,12 +12,12 @@ import com.z.common.R;
 import com.z.common.ResultCodeEnum;
 import com.z.constant.PhoneCodeConstant;
 import com.z.constant.UserConstant;
+import com.z.dto.LoginDTO;
 import com.z.entity.UserAuth;
 import com.z.properties.JWTConfigProperties;
 import com.z.service.UserService;
 import com.z.util.JwtUtil;
 import com.z.util.RedisUtil;
-import com.z.vo.LoginVo;
 
 /**
  * 用户控制器
@@ -40,7 +40,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public R login(@RequestBody LoginVo loginVo) {
+    public R login(@RequestBody LoginDTO loginVo) {
         String username = loginVo.getUsername();
         String password = loginVo.getPassword();
         Integer loginType = loginVo.getLoginType();

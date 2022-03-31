@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.z.common.R;
 import com.z.common.ResultCodeEnum;
+import com.z.dto.PostDTO;
 import com.z.service.PostService;
-import com.z.vo.PostVo;
 
 /**
  * 投稿控制器
@@ -29,7 +29,7 @@ public class PostController {
      * @return
      */
     @PostMapping("/post")
-    public R post(PostVo postVo) {
+    public R post(PostDTO postVo) {
         try {
             R r = postService.post(postVo);
             return r;

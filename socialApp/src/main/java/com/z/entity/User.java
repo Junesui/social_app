@@ -34,5 +34,7 @@ public class User implements Serializable {
     private Boolean isDeleted;
     private Long createdAt;
     private Long updatedAt;
+    
+    
 
 }
