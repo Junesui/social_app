@@ -1,0 +1,247 @@
+##############################################################
+[database]
+
+# 缓存存储的数据库
+cache_store = "mongodb://root:root@192.168.3.32:27017/gorse?authSource=admin&connect=direct"
+
+# 数据存储的数据库
+data_store = "mysql://root:root@tcp(192.168.3.32:3306)/gorse"
+
+# 数据库中表（集合、键）的命名前缀
+table_prefix = "t_rec_"
+
+# 缓存存储数据库中表（集合、键）的命名前缀。如果为空，则使用table_prefix
+cache_table_prefix = "rec_"
+
+# 数据存储数据库中表（集合、键）的命名前缀。如果为空，则使用table_prefix
+data_table_prefix = "t_rec_"
+
+##############################################################
+[master]
+
+# 主节点 GRPC 监听端口（用于元数据交换）
+port = 8086
+
+# 主节点 GRPC 服务监听IP（用于元数据交换）
+host = "0.0.0.0"
+
+# 主节点 HTTP 服务监听端口（用于控制台和指标监控）
+http_port = 8088
+
+# 主节点 HTTP 服务监听IP（用于控制台和指标监控）
+http_host = "0.0.0.0"
+
+# 允许http连接的域名列表
+http_cors_domains = []
+
+# 允许http连接的请求方法
+http_cors_methods = []
+
+# 主节点的工作线程数
+n_jobs = 1
+
+# 元数据超时时间
+meta_timeout = "30s"
+
+# 控制台登录用户名
+dashboard_user_name = "admin"
+
+# 控制台登录密码
+dashboard_password = "admin"
+
+# 管理员APIs的密钥（需要 SSL）
+admin_api_key = ""
+
+##############################################################
+[server]
+
+# 默认返回条目数量
+default_n = 10
+
+# RESTful API 的密钥（需要 SSL） 
+api_key = ""
+
+# 集群中各个节点时钟之间的最大误差
+clock_error = "5s"
+
+# 插入反馈时自动插入新用户
+auto_insert_user = true
+
+# 插入反馈时自动插入新物品
+auto_insert_item = true
+
+# 服务节点本地缓存过期时间
+# 服务节点将隐藏的物品和热门物品缓存在本地缓存中，以避免过于频繁地访问外部数据库。
+cache_expire = "10s"
+
+##############################################################
+[recommend]
+
+# 推荐缓存大小
+# 增加缓存的大小可以提升推荐准确率，但也会消耗更多的缓存存储空间。
+cache_size = 100
+
+# 推荐缓存过期时间
+# 缓存的过期时间应该在新鲜度和计算成本之间进行权衡
+cache_expire = "72h"
+
+##############################################################
+[recommend.data_source]
+
+# 正向反馈的类型（自定义）[点击查看/点赞/评论/分享]
+positive_feedback_types = ["view","like","comment","share"]
+
+# 已读反馈的类型（负反馈。数据显示给用户的时候就算是已读反馈）
+read_feedback_types = ["read"]
+
+# 正反馈的有效时间（0表示不开启。单位：天）
+# 防止推荐系统根据陈旧的反馈生成推荐。
+positive_feedback_ttl = 90
+
+# 物品的有效时间（0表示不开启。单位：天）
+# 可以从推荐系统中隐藏太旧的物品。陈旧的物品永远不会被推荐给用户，也不会在推荐模型的训练中使用。
+item_ttl = 180
+
+##############################################################
+[recommend.popular]
+
+# 热门物品的时间窗口
+popular_window = "4320h"
+
+##############################################################
+[recommend.user_neighbors]
+
+# 相似用户的算法类型
+# similar : 通过用户的共同标签数量查找相似用户
+# related : 通过用户共同喜欢的物品数量查找相似用户
+# auto : 通过以上两种方式查找相似用户
+# 如果用户附加了高质量的标签，similar是最佳选择。如果用户没有标签，则使用related。对于其他情况，可以考虑auto
+neighbor_type = "auto"
+
+# 使用聚类索引搜索相似用户
+enable_index = true
+
+# 聚类索引的最小召回率（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_recall = 0.8
+
+# 聚类索引的最大拟合次数（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_fit_epoch = 3
+
+##############################################################
+[recommend.item_neighbors]
+
+# 相似物品的算法类型
+# similar : 通过物品的共同标签数量查找相似物品
+# related : 通过物品的共同用户数量查找相似物品
+# auto : 通过以上两种方式查找相似物品
+# 如果物品有高质量的标签，similar是最佳选择。如果物品没有标签，则使用related。对于其他情况，请考虑auto
+neighbor_type = "auto"
+
+# 使用聚类索引搜索相似物品
+enable_index = true
+
+# 聚类索引的最小召回率（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_recall = 0.8
+
+# 聚类索引的最大拟合次数（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_fit_epoch = 3
+
+##############################################################
+[recommend.collaborative]
+
+# 使用 HNSW 索引加速协同过滤推荐
+enable_index = true
+
+# HNSW最小召回率（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_recall = 0.9
+
+# HNSW最大拟合次数（太小会导致索引无法达到要求的召回率，而太大则会降低性能）
+index_fit_epoch = 3
+
+# 模型训练周期 
+model_fit_period = "60m"
+
+# 模型搜索周期
+model_search_period = "360m"
+
+# 模型搜索中每个模型的训练迭代数（超参）
+# 大的值可能会产生更好的推荐结果，但要花费更多的CPU时间（在大多数情况下，没有必要改变这个选项值）
+model_search_epoch = 100
+
+# 模型搜索中试验模型数（超参）
+# 大的值可能会产生更好的推荐结果，但要花费更多的CPU时间（在大多数情况下，没有必要改变这个选项值）
+model_search_trials = 10
+
+# 启用搜索不同大小的模型，这会占用更多内存
+enable_model_size_search = false
+
+##############################################################
+[recommend.replacement]
+
+# 将已读物品放回推荐池
+enable_replacement = false
+
+# 正向反馈物品放回衰减权重
+positive_replacement_decay = 0.8
+
+# 已读反馈物品放回衰减权重
+read_replacement_decay = 0.6
+
+##############################################################
+[recommend.offline]
+
+# 触发离线推荐的周期
+check_recommend_period = "1m"
+
+# 强制刷新离线推荐的周期
+refresh_recommend_period = "24h"
+
+# 离线推荐时启用最新推荐
+enable_latest_recommend = true
+
+# 离线推荐时开启热门推荐
+enable_popular_recommend = true
+
+# 在离线推荐期间启用基于相似用户的推荐
+enable_user_based_recommend = true
+
+# 在离线推荐期间启用基于相似物品的推荐
+enable_item_based_recommend = true
+
+# 离线推荐时启用协同过滤推荐
+enable_collaborative_recommend = true
+
+# 在离线推荐期间启用点击率预测。否则，多路推荐的结果将被随机合并
+enable_click_through_prediction = true
+
+# 在探索推荐阶段，将热门物品或最新物品注入推荐结果的比例
+explore_recommend = { popular = 0.1, latest = 0.2 }
+
+##############################################################
+[recommend.online]
+
+# 个性化推荐时，离线推荐耗尽时的兜底的推荐算法
+# item_based : 推荐相似物品
+# popular : 推荐热门物品
+# latest : 推荐最新物品
+fallback_recommend = ["item_based","latest","popular"]
+
+# 为未注册用户生成推荐时，由基于最新的n个正反馈，通过基于物品相似性的推荐算法产生。
+num_feedback_fallback_item_based = 10
+
+##############################################################
+[tracing]
+
+# 为 REST API 启用追踪
+enable_tracing = false
+
+# jaeger/zipkin/otlp/otlphttp
+exporter = "jaeger"
+
+# 追踪收集的访问URL
+collector_endpoint = "http://192.168.3.32:14268/api/traces"
+
+# 追踪类型：always/never/ratio
+sampler = "always"
+# 基于比率的采样器的比率
+ratio = 1

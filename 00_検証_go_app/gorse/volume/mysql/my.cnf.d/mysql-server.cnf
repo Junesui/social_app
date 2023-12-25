@@ -1,0 +1,43 @@
+#
+# This group are read by MySQL server.
+# Use it for options that only the server (but not clients) should see
+#
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/en/server-configuration-defaults.html
+
+# Settings user and group are ignored when systemd is used.
+# If you need to run mysqld under a different user or group,
+# customize your systemd unit file for mysqld according to the
+# instructions in http://fedoraproject.org/wiki/Systemd
+
+[mysqld]
+
+# 服务端口号
+port=3306
+
+#数据库默认字符集, 主流字符集支持一些特殊表情符号（特殊表情符占用4个字节）
+character-set-server=utf8mb4
+
+#数据库字符集对应一些排序等规则，注意要和character-set-server对应
+collation-server=utf8mb4_0900_ai_ci
+
+#是否对sql语句大小写敏感，1表示不敏感
+lower_case_table_names=1
+
+# MySQL数据文件存放的目录
+datadir=/var/lib/mysql
+
+# MySQL服务器的Unix套接字文件
+socket=/var/lib/mysql/mysql.sock
+
+# 错误日志文件
+log-error=/var/log/mysql/mysqld.log
+
+# 进程ID文件
+pid-file=/run/mysqld/mysqld.pid
+
+#只能用IP地址检查客户端的登录，不用主机名
+skip_name_resolve=1i
+
+#设置协议认证方式(用于第三方客户端连接使用)
+authentication_policy=mysql_native_password
